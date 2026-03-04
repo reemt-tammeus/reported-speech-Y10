@@ -360,16 +360,3 @@ elif st.session_state.step == "result":
         if st.button("Zurück zum Hauptmenü", use_container_width=True):
             st.session_state.step = "menu"
             st.rerun()
-
-```
-
-### Wie du die App ausführst:
-
-1. Installiere Python (falls nicht vorhanden).
-2. Installiere Streamlit über das Terminal/CMD: `pip install streamlit`.
-3. Speichere den Code oben als `app.py`.
-4. Starte die App im Terminal mit: `streamlit run app.py`.
-
-Die App öffnet sich dann automatisch in deinem Browser. Viel Erfolg beim Üben mit deinen Schülern!
-
-Soll ich dir noch zeigen, wie du das Design (z.B. Farben oder Schriftarten) anpassen kannst?

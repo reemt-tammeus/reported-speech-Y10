@@ -83,6 +83,91 @@ def get_data():
             {"direct": "The dog is barking.", "prefix": "She said that", "answer": "the dog was barking", "explanation": "is ➔ was"},
             {"direct": "I have lost my passport.", "prefix": "He said that", "answer": "he had lost his passport", "explanation": "my ➔ his"},
             {"direct": "We saw a great play.", "prefix": "They said that", "answer": "they had seen a great play", "explanation": "saw ➔ had seen"},
+            {"direct": "import streamlit as st
+import random
+import re
+
+# --- KONFIGURATION ---
+st.set_page_config(
+    page_title="Reported Speech Pro Trainer", 
+    page_icon="📝", 
+    layout="centered"
+)
+
+# --- VOLLSTÄNDIGER DATENSATZ ---
+@st.cache_data
+def get_data():
+    return {
+        "Statements": [
+            {"direct": "I am hungry.", "prefix": "He said that", "answer": "he was hungry", "explanation": "am ➔ was"},
+            {"direct": "We are watching a movie.", "prefix": "They said that", "answer": "they were watching a movie", "explanation": "are ➔ were"},
+            {"direct": "I have finished my project.", "prefix": "She said that", "answer": "she had finished her project", "explanation": "have finished ➔ had finished"},
+            {"direct": "I will call you tomorrow.", "prefix": "He said that", "answer": ["he would call me the next day", "he would call me the following day"], "explanation": "will ➔ would | tomorrow ➔ the next day"},
+            {"direct": "The sun rises in the east.", "prefix": "The teacher said that", "answer": "the sun rose in the east", "explanation": "rises ➔ rose"},
+            {"direct": "I don't like coffee.", "prefix": "She said that", "answer": ["she didn't like coffee", "she did not like coffee"], "explanation": "don't ➔ didn't"},
+            {"direct": "We went to Paris last year.", "prefix": "They said that", "answer": "they had gone to Paris the year before", "explanation": "went ➔ had gone"},
+            {"direct": "I can speak three languages.", "prefix": "He said that", "answer": "he could speak three languages", "explanation": "can ➔ could"},
+            {"direct": "I am playing the guitar.", "prefix": "She said that", "answer": "she was playing the guitar", "explanation": "am playing ➔ was playing"},
+            {"direct": "I have never been to London.", "prefix": "He said that", "answer": "he had never been to London", "explanation": "have never been ➔ had never been"},
+            {"direct": "My brother is ill.", "prefix": "She said that", "answer": "her brother was ill", "explanation": "my ➔ her | is ➔ was"},
+            {"direct": "We will help you.", "prefix": "They said that", "answer": "they would help me", "explanation": "will ➔ would"},
+            {"direct": "I saw a ghost.", "prefix": "The boy said that", "answer": "he had seen a ghost", "explanation": "saw ➔ had seen"},
+            {"direct": "I am not coming.", "prefix": "He said that", "answer": ["he was not coming", "he wasn't coming"], "explanation": "am not ➔ was not"},
+            {"direct": "The train leaves at five.", "prefix": "She said that", "answer": "the train left at five", "explanation": "leaves ➔ left"},
+            {"direct": "I have lost my phone.", "prefix": "He said that", "answer": "he had lost his phone", "explanation": "have lost ➔ had lost"},
+            {"direct": "We are happy here.", "prefix": "They said that", "answer": "they were happy there", "explanation": "are ➔ were | here ➔ there"},
+            {"direct": "I didn't do it.", "prefix": "She said that", "answer": ["she hadn't done it", "she had not done it"], "explanation": "didn't do ➔ hadn't done"},
+            {"direct": "It is raining.", "prefix": "He said that", "answer": "it was raining", "explanation": "is ➔ was"},
+            {"direct": "I will be there.", "prefix": "She said that", "answer": "she would be there", "explanation": "will ➔ would"},
+            {"direct": "I have a new car.", "prefix": "He said that", "answer": "he had a new car", "explanation": "have ➔ had"},
+            {"direct": "The children are sleeping.", "prefix": "She said that", "answer": "the children were sleeping", "explanation": "are ➔ were"},
+            {"direct": "I went shopping yesterday.", "prefix": "He said that", "answer": "he had gone shopping the day before", "explanation": "yesterday ➔ the day before"},
+            {"direct": "I can't find my keys.", "prefix": "She said that", "answer": ["she couldn't find her keys", "she could not find her keys"], "explanation": "can't ➔ couldn't"},
+            {"direct": "We are going on holiday.", "prefix": "They said that", "answer": "they were going on holiday", "explanation": "are ➔ were"},
+            {"direct": "I have already eaten.", "prefix": "He said that", "answer": "he had already eaten", "explanation": "have ➔ had"},
+            {"direct": "I don't know the answer.", "prefix": "She said that", "answer": ["she didn't know the answer", "she did not know the answer"], "explanation": "don't ➔ didn't"},
+            {"direct": "I will buy a house.", "prefix": "He said that", "answer": "he would buy a house", "explanation": "will ➔ would"},
+            {"direct": "The pizza is delicious.", "prefix": "They said that", "answer": "the pizza was delicious", "explanation": "is ➔ was"},
+            {"direct": "I was at home.", "prefix": "She said that", "answer": "she had been at home", "explanation": "was ➔ had been"},
+            {"direct": "I am learning Spanish.", "prefix": "He said that", "answer": "he was learning Spanish", "explanation": "am ➔ was"},
+            {"direct": "My father works in a bank.", "prefix": "She said that", "answer": "her father worked in a bank", "explanation": "works ➔ worked"},
+            {"direct": "We have seen this film before.", "prefix": "They said that", "answer": "they had seen that film before", "explanation": "this ➔ that"},
+            {"direct": "I don't have enough money.", "prefix": "He said that", "answer": ["he didn't have enough money", "he did not have enough money"], "explanation": "don't ➔ didn't"},
+            {"direct": "I will send the email now.", "prefix": "She said that", "answer": "she would send the email then", "explanation": "now ➔ then"},
+            {"direct": "The museum is closed.", "prefix": "He said that", "answer": "the museum was closed", "explanation": "is ➔ was"},
+            {"direct": "I am meeting a friend.", "prefix": "She said that", "answer": "she was meeting a friend", "explanation": "am ➔ was"},
+            {"direct": "We lived in Berlin.", "prefix": "They said that", "answer": "they had lived in Berlin", "explanation": "lived ➔ had lived"},
+            {"direct": "I haven't seen her.", "prefix": "He said that", "answer": ["he hadn't seen her", "he had not seen her"], "explanation": "haven't ➔ hadn't"},
+            {"direct": "I forgot my umbrella.", "prefix": "She said that", "answer": "she had forgotten her umbrella", "explanation": "forgot ➔ had forgotten"},
+            {"direct": "The cake tastes great.", "prefix": "He said that", "answer": "the cake tasted great", "explanation": "tastes ➔ tasted"},
+            {"direct": "I am not afraid.", "prefix": "She said that", "answer": ["she was not afraid", "she wasn't afraid"], "explanation": "am ➔ was"},
+            {"direct": "We will win.", "prefix": "They said that", "answer": "they would win", "explanation": "will ➔ would"},
+            {"direct": "I broke the vase.", "prefix": "The girl said that", "answer": "she had broken the vase", "explanation": "broke ➔ had broken"},
+            {"direct": "I am feeling better today.", "prefix": "He said that", "answer": "he was feeling better that day", "explanation": "today ➔ that day"},
+            {"direct": "My parents are coming.", "prefix": "She said that", "answer": "her parents were coming", "explanation": "are ➔ were"},
+            {"direct": "I have to go now.", "prefix": "He said that", "answer": "he had to go then", "explanation": "have to ➔ had to"},
+            {"direct": "I won't tell anyone.", "prefix": "She said that", "answer": ["she wouldn't tell anyone", "she would not tell anyone"], "explanation": "won't ➔ wouldn't"},
+            {"direct": "The weather is beautiful.", "prefix": "They said that", "answer": "the weather was beautiful", "explanation": "is ➔ was"},
+            {"direct": "I didn't see the accident.", "prefix": "He said that", "answer": ["he hadn't seen the accident", "he had not seen the accident"], "explanation": "didn't see ➔ hadn't seen"},
+            {"direct": "I am waiting for the bus.", "prefix": "He said that", "answer": "he was waiting for the bus", "explanation": "am ➔ was"},
+            {"direct": "We have lived here for ten years.", "prefix": "They said that", "answer": "they had lived there for ten years", "explanation": "here ➔ there"},
+            {"direct": "I will do my best.", "prefix": "She said that", "answer": "she would do her best", "explanation": "my ➔ her"},
+            {"direct": "I didn't see you at the party.", "prefix": "He told me that", "answer": ["he hadn't seen me at the party", "he had not seen me at the party"], "explanation": "didn't see ➔ hadn't seen"},
+            {"direct": "The water is boiling.", "prefix": "She said that", "answer": "the water was boiling", "explanation": "is ➔ was"},
+            {"direct": "I have already finished my breakfast.", "prefix": "He said that", "answer": "he had already finished his breakfast", "explanation": "my ➔ his"},
+            {"direct": "We are going to the cinema tonight.", "prefix": "They said that", "answer": "they were going to the cinema that night", "explanation": "tonight ➔ that night"},
+            {"direct": "I can't swim very well.", "prefix": "She said that", "answer": ["she couldn't swim very well", "she could not swim very well"], "explanation": "can't ➔ couldn't"},
+            {"direct": "I found a wallet.", "prefix": "He said that", "answer": "he had found a wallet", "explanation": "found ➔ had found"},
+            {"direct": "My sister is a doctor.", "prefix": "She said that", "answer": "her sister was a doctor", "explanation": "is ➔ was"},
+            {"direct": "I will bring the book back.", "prefix": "He said that", "answer": "he would bring the book back", "explanation": "will ➔ would"},
+            {"direct": "The shops are closed.", "prefix": "She said that", "answer": "the shops were closed", "explanation": "are ➔ were"},
+            {"direct": "I am reading a book.", "prefix": "He said that", "answer": "he was reading a book", "explanation": "am ➔ was"},
+            {"direct": "We haven't been to the zoo yet.", "prefix": "They said that", "answer": ["they hadn't been to the zoo yet", "they had not been to the zoo yet"], "explanation": "haven't ➔ hadn't"},
+            {"direct": "I don't like spicy food.", "prefix": "She said that", "answer": ["she didn't like spicy food", "she did not like spicy food"], "explanation": "don't ➔ didn't"},
+            {"direct": "I will call you.", "prefix": "He said that", "answer": "he would call me", "explanation": "will ➔ would"},
+            {"direct": "The dog is barking.", "prefix": "She said that", "answer": "the dog was barking", "explanation": "is ➔ was"},
+            {"direct": "I have lost my passport.", "prefix": "He said that", "answer": "he had lost his passport", "explanation": "my ➔ his"},
+            {"direct": "We saw a great play.", "prefix": "They said that", "answer": "they had seen a great play", "explanation": "saw ➔ had seen"},
             {"direct": "I am not feeling well.", "prefix": "She said that", "answer": ["she was not feeling well", "she wasn't feeling well"], "explanation": "am ➔ was"},
             {"direct": "I will make a cake.", "prefix": "He said that", "answer": "he would make a cake", "explanation": "will ➔ would"},
             {"direct": "My parents are on holiday.", "prefix": "She said that", "answer": "her parents were on holiday", "explanation": "are ➔ were"},
@@ -1283,5 +1368,6 @@ elif st.session_state.step == "result":
     st.metric("Punkte", f"{st.session_state.score} / 15")
     if st.button("Nochmal", use_container_width=True): start_exercise(st.session_state.last_category)
     if st.button("Menü", use_container_width=True): st.session_state.step = "menu"
+
 
 

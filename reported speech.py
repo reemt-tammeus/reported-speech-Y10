@@ -270,56 +270,56 @@ def get_data():
             {"direct": "Please bring wine.", "prefix": "He asked them", "answer": "to bring wine", "explanation": "to-Infinitiv"}
         ],
         "Backshift": [
-            {"direct": "I work in a bank,", "prefix": "Paul said that he", "answer": "worked in a bank.", "explanation": "Backshift: Present Simple ➔ Past Simple"},
-            {"direct": "We are watching a movie,", "prefix": "They said that they", "answer": "were watching a movie.", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
-            {"direct": "She lost her keys yesterday,", "prefix": "I said that she", "answer": ["had lost her keys the day before.", "'d lost her keys the day before."], "explanation": "Backshift: Past Simple ➔ Past Perfect"},
-            {"direct": "I have finished my homework,", "prefix": "Sarah told me that she", "answer": ["had finished her homework.", "'d finished her homework."], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
-            {"direct": "I will help you with the bags,", "prefix": "He said that he", "answer": ["would help me with the bags.", "'d help me with the bags."], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
-            {"direct": "I can swim very well,", "prefix": "Leo said that he", "answer": "could swim very well.", "explanation": "Backshift: can ➔ could"},
-            {"direct": "We must go home now,", "prefix": "They explained that they", "answer": "had to go home then.", "explanation": "Backshift: must ➔ had to | now ➔ then"},
-            {"direct": "I am writing an email,", "prefix": "Tim said that he", "answer": "was writing an email.", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
-            {"direct": "They live in Berlin,", "prefix": "She said that they", "answer": "lived in Berlin.", "explanation": "Backshift: Present Simple ➔ Past Simple"},
-            {"direct": "I bought a new car last week,", "prefix": "Marc said that he", "answer": ["had bought a new car the week before.", "'d bought a new car the week before."], "explanation": "Backshift: Past Simple ➔ Past Perfect"},
-            {"direct": "We have visited Italy twice,", "prefix": "They explained that they", "answer": ["had visited Italy twice.", "'d visited Italy twice."], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
-            {"direct": "It will rain later,", "prefix": "The report said that it", "answer": ["would rain later.", "'d rain later."], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
-            {"direct": "You may leave early,", "prefix": "The teacher said that I", "answer": "might leave early.", "explanation": "Backshift: may ➔ might"},
-            {"direct": "I don't like coffee,", "prefix": "Elena said that she", "answer": ["did not like coffee.", "didn't like coffee."], "explanation": "Backshift: Present Simple (neg) ➔ Past Simple"},
-            {"direct": "We are listening to music,", "prefix": "The girls said that they", "answer": "were listening to music.", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
-            {"direct": "He didn't see the sign,", "prefix": "I said that he", "answer": ["had not seen the sign.", "hadn't seen the sign."], "explanation": "Backshift: Past Simple (neg) ➔ Past Perfect"},
-            {"direct": "I have lost my passport,", "prefix": "The tourist told me that he", "answer": ["had lost his passport.", "'d lost his passport."], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
-            {"direct": "I won't be late,", "prefix": "Julia promised that she", "answer": ["would not be late.", "wouldn't be late."], "explanation": "Backshift: Will-Future (neg) ➔ Would-Conditional"},
-            {"direct": "I must study for the test,", "prefix": "Ben said that he", "answer": "had to study for the test.", "explanation": "Backshift: must ➔ had to"},
-            {"direct": "The train arrives at 8,", "prefix": "The clerk said that the train", "answer": "arrived at 8.", "explanation": "Backshift: Present Simple ➔ Past Simple"},
-            {"direct": "We are eating lunch,", "prefix": "They told us that they", "answer": "were eating lunch.", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
-            {"direct": "I went to the doctor yesterday,", "prefix": "Sam said that he", "answer": ["had gone to the doctor the day before.", "'d gone to the doctor the day before."], "explanation": "Backshift: Past Simple ➔ Past Perfect"},
-            {"direct": "I haven't seen that film yet,", "prefix": "Lisa said that she", "answer": ["had not seen that film yet.", "hadn't seen that film yet."], "explanation": "Backshift: Present Perfect (neg) ➔ Past Perfect"},
-            {"direct": "I will send you a postcard,", "prefix": "Clara promised that she", "answer": ["would send me a postcard.", "'d send me a postcard."], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
-            {"direct": "I can't come to the party,", "prefix": "Tom said that he", "answer": ["could not come to the party.", "couldn't come to the party."], "explanation": "Backshift: can't ➔ couldn't"},
-            {"direct": "I play the guitar every day,", "prefix": "Anna said that she", "answer": "played the guitar every day.", "explanation": "Backshift: Present Simple ➔ Past Simple"},
-            {"direct": "We are making pizza,", "prefix": "The boys told us that they", "answer": "were making pizza.", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
-            {"direct": "They missed the bus,", "prefix": "I explained that they", "answer": ["had missed the bus.", "'d missed the bus."], "explanation": "Backshift: Past Simple ➔ Past Perfect"},
-            {"direct": "I have never been to London,", "prefix": "Mike said that he", "answer": ["had never been to London.", "'d never been to London."], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
-            {"direct": "I will call you later,", "prefix": "My mom promised that she", "answer": ["would call me later.", "'d call me later."], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
-            {"direct": "I can speak three languages,", "prefix": "The student said that she", "answer": "could speak three languages.", "explanation": "Backshift: can ➔ could"},
-            {"direct": "You must wear a helmet,", "prefix": "The officer told him that he", "answer": "had to wear a helmet.", "explanation": "Backshift: must ➔ had to"},
-            {"direct": "The water is very cold,", "prefix": "The swimmer said that the water", "answer": "was very cold.", "explanation": "Backshift: am/is/are ➔ was/were"},
-            {"direct": "We are waiting for the taxi,", "prefix": "They said that they", "answer": "were waiting for the taxi.", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
-            {"direct": "I saw a famous actor yesterday,", "prefix": "Sophie told me that she", "answer": ["had seen a famous actor the day before.", "'d seen a famous actor the day before."], "explanation": "Backshift: Past Simple ➔ Past Perfect"},
-            {"direct": "He has already left the office,", "prefix": "The secretary said that he", "answer": ["had already left the office.", "'d already left the office."], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
-            {"direct": "We will win the match,", "prefix": "The coach was sure that they", "answer": ["would win the match.", "'d win the match."], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
-            {"direct": "You may use my laptop,", "prefix": "Dad said that I", "answer": "might use his laptop.", "explanation": "Backshift: may ➔ might"},
-            {"direct": "I don't know the answer,", "prefix": "The boy admitted that he", "answer": ["did not know the answer.", "didn't know the answer."], "explanation": "Backshift: Present Simple (neg) ➔ Past Simple"},
-            {"direct": "They are playing football in the park,", "prefix": "Lucy said that they", "answer": "were playing football in the park.", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
-            {"direct": "I didn't go to the party,", "prefix": "Kevin said that he", "answer": ["had not gone to the party.", "hadn't gone to the party."], "explanation": "Backshift: Past Simple (neg) ➔ Past Perfect"},
-            {"direct": "I have forgotten my umbrella,", "prefix": "The woman said that she", "answer": ["had forgotten her umbrella.", "'d forgotten her umbrella."], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
-            {"direct": "I won't tell anyone your secret,", "prefix": "Emily promised that she", "answer": ["would not tell anyone my secret.", "wouldn't tell anyone my secret."], "explanation": "Backshift: Will-Future (neg) ➔ Would-Conditional"},
-            {"direct": "I must finish this report,", "prefix": "The manager explained that he", "answer": "had to finish that report.", "explanation": "Backshift: must ➔ had to | this ➔ that"},
-            {"direct": "We like our new house,", "prefix": "They said that they", "answer": "liked their new house.", "explanation": "Backshift: Present Simple ➔ Past Simple"},
-            {"direct": "It is snowing outside,", "prefix": "Grandpa said that it", "answer": "was snowing outside.", "explanation": "Backshift: is snowing ➔ was snowing"},
-            {"direct": "The plane landed an hour ago,", "prefix": "The pilot said that the plane", "answer": ["had landed an hour before.", "'d landed an hour before."], "explanation": "Backshift: Past Simple ➔ Past Perfect | ago ➔ before"},
-            {"direct": "I have cleaned the kitchen,", "prefix": "David told us that he", "answer": ["had cleaned the kitchen.", "'d cleaned the kitchen."], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
-            {"direct": "I will bring some cake,", "prefix": "Maria said that she", "answer": ["would bring some cake.", "'d bring some cake."], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
-            {"direct": "I can't find my glasses,", "prefix": "The old man complained that he", "answer": ["could not find his glasses.", "couldn't find his glasses."], "explanation": "Backshift: can't ➔ couldn't"}
+            {"direct": "I work in a bank.", "prefix": "Paul said that he", "suffix": "in a bank.", "answer": "worked", "explanation": "Backshift: Present Simple ➔ Past Simple"},
+            {"direct": "We are watching a movie.", "prefix": "They said that they", "suffix": "a movie.", "answer": "were watching", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
+            {"direct": "She lost her keys yesterday.", "prefix": "I said that she", "suffix": "her keys the day before.", "answer": ["had lost", "'d lost"], "explanation": "Backshift: Past Simple ➔ Past Perfect"},
+            {"direct": "I have finished my homework.", "prefix": "Sarah told me that she", "suffix": "her homework.", "answer": ["had finished", "'d finished"], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
+            {"direct": "I will help you with the bags.", "prefix": "He said that he", "suffix": "me with the bags.", "answer": ["would help", "'d help"], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
+            {"direct": "I can swim very well.", "prefix": "Leo said that he", "suffix": "swim very well.", "answer": "could", "explanation": "Backshift: can ➔ could"},
+            {"direct": "We must go home now.", "prefix": "They explained that they", "suffix": "go home then.", "answer": "had to", "explanation": "Backshift: must ➔ had to | now ➔ then"},
+            {"direct": "I am writing an email.", "prefix": "Tim said that he", "suffix": "an email.", "answer": "was writing", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
+            {"direct": "They live in Berlin.", "prefix": "She said that they", "suffix": "in Berlin.", "answer": "lived", "explanation": "Backshift: Present Simple ➔ Past Simple"},
+            {"direct": "I bought a new car last week.", "prefix": "Marc said that he", "suffix": "a new car the week before.", "answer": ["had bought", "'d bought"], "explanation": "Backshift: Past Simple ➔ Past Perfect"},
+            {"direct": "We have visited Italy twice.", "prefix": "They explained that they", "suffix": "Italy twice.", "answer": ["had visited", "'d visited"], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
+            {"direct": "It will rain later.", "prefix": "The report said that it", "suffix": "rain later.", "answer": ["would rain", "'d rain"], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
+            {"direct": "You may leave early.", "prefix": "The teacher said that I", "suffix": "leave early.", "answer": "might", "explanation": "Backshift: may ➔ might"},
+            {"direct": "I don't like coffee.", "prefix": "Elena said that she", "suffix": "coffee.", "answer": ["did not like", "didn't like"], "explanation": "Backshift: Present Simple (neg) ➔ Past Simple"},
+            {"direct": "We are listening to music.", "prefix": "The girls said that they", "suffix": "to music.", "answer": "were listening", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
+            {"direct": "He didn't see the sign.", "prefix": "I said that he", "suffix": "the sign.", "answer": ["had not seen", "hadn't seen"], "explanation": "Backshift: Past Simple (neg) ➔ Past Perfect"},
+            {"direct": "I have lost my passport.", "prefix": "The tourist told me that he", "suffix": "his passport.", "answer": ["had lost", "'d lost"], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
+            {"direct": "I won't be late.", "prefix": "Julia promised that she", "suffix": "late.", "answer": ["would not be", "wouldn't be"], "explanation": "Backshift: Will-Future (neg) ➔ Would-Conditional"},
+            {"direct": "I must study for the test.", "prefix": "Ben said that he", "suffix": "study for the test.", "answer": "had to", "explanation": "Backshift: must ➔ had to"},
+            {"direct": "The train arrives at 8.", "prefix": "The clerk said that the train", "suffix": "at 8.", "answer": "arrived", "explanation": "Backshift: Present Simple ➔ Past Simple"},
+            {"direct": "We are eating lunch.", "prefix": "They told us that they", "suffix": "lunch.", "answer": "were eating", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
+            {"direct": "I went to the doctor yesterday.", "prefix": "Sam said that he", "suffix": "to the doctor the day before.", "answer": ["had gone", "'d gone"], "explanation": "Backshift: Past Simple ➔ Past Perfect"},
+            {"direct": "I haven't seen that film yet.", "prefix": "Lisa said that she", "suffix": "that film yet.", "answer": ["had not seen", "hadn't seen"], "explanation": "Backshift: Present Perfect (neg) ➔ Past Perfect"},
+            {"direct": "I will send you a postcard.", "prefix": "Clara promised that she", "suffix": "me a postcard.", "answer": ["would send", "'d send"], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
+            {"direct": "I can't come to the party.", "prefix": "Tom said that he", "suffix": "come to the party.", "answer": ["could not", "couldn't"], "explanation": "Backshift: can't ➔ couldn't"},
+            {"direct": "I play the guitar every day.", "prefix": "Anna said that she", "suffix": "the guitar every day.", "answer": "played", "explanation": "Backshift: Present Simple ➔ Past Simple"},
+            {"direct": "We are making pizza.", "prefix": "The boys told us that they", "suffix": "pizza.", "answer": "were making", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
+            {"direct": "They missed the bus.", "prefix": "I explained that they", "suffix": "the bus.", "answer": ["had missed", "'d missed"], "explanation": "Backshift: Past Simple ➔ Past Perfect"},
+            {"direct": "I have never been to London.", "prefix": "Mike said that he", "suffix": "to London.", "answer": ["had never been", "'d never been"], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
+            {"direct": "I will call you later.", "prefix": "My mom promised that she", "suffix": "me later.", "answer": ["would call", "'d call"], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
+            {"direct": "I can speak three languages.", "prefix": "The student said that she", "suffix": "speak three languages.", "answer": "could", "explanation": "Backshift: can ➔ could"},
+            {"direct": "You must wear a helmet.", "prefix": "The officer told him that he", "suffix": "wear a helmet.", "answer": "had to", "explanation": "Backshift: must ➔ had to"},
+            {"direct": "The water is very cold.", "prefix": "The swimmer said that the water", "suffix": "very cold.", "answer": "was", "explanation": "Backshift: am/is/are ➔ was/were"},
+            {"direct": "We are waiting for the taxi.", "prefix": "They said that they", "suffix": "for the taxi.", "answer": "were waiting", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
+            {"direct": "I saw a famous actor yesterday.", "prefix": "Sophie told me that she", "suffix": "a famous actor the day before.", "answer": ["had seen", "'d seen"], "explanation": "Backshift: Past Simple ➔ Past Perfect"},
+            {"direct": "He has already left the office.", "prefix": "The secretary said that he", "suffix": "the office.", "answer": ["had already left", "'d already left"], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
+            {"direct": "We will win the match.", "prefix": "The coach was sure that they", "suffix": "the match.", "answer": ["would win", "'d win"], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
+            {"direct": "You may use my laptop.", "prefix": "Dad said that I", "suffix": "use his laptop.", "answer": "might", "explanation": "Backshift: may ➔ might"},
+            {"direct": "I don't know the answer.", "prefix": "The boy admitted that he", "suffix": "the answer.", "answer": ["did not know", "didn't know"], "explanation": "Backshift: Present Simple (neg) ➔ Past Simple"},
+            {"direct": "They are playing football in the park.", "prefix": "Lucy said that they", "suffix": "football in the park.", "answer": "were playing", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
+            {"direct": "I didn't go to the party.", "prefix": "Kevin said that he", "suffix": "to the party.", "answer": ["had not gone", "hadn't gone"], "explanation": "Backshift: Past Simple (neg) ➔ Past Perfect"},
+            {"direct": "I have forgotten my umbrella.", "prefix": "The woman said that she", "suffix": "her umbrella.", "answer": ["had forgotten", "'d forgotten"], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
+            {"direct": "I won't tell anyone your secret.", "prefix": "Emily promised that she", "suffix": "anyone my secret.", "answer": ["would not tell", "wouldn't tell"], "explanation": "Backshift: Will-Future (neg) ➔ Would-Conditional"},
+            {"direct": "I must finish this report.", "prefix": "The manager explained that he", "suffix": "that report.", "answer": "had to finish", "explanation": "Backshift: must ➔ had to | this ➔ that"},
+            {"direct": "We like our new house.", "prefix": "They said that they", "suffix": "their new house.", "answer": "liked", "explanation": "Backshift: Present Simple ➔ Past Simple"},
+            {"direct": "It is snowing outside.", "prefix": "Grandpa said that it", "suffix": "outside.", "answer": "was snowing", "explanation": "Backshift: is snowing ➔ was snowing"},
+            {"direct": "The plane landed an hour ago.", "prefix": "The pilot said that the plane", "suffix": "an hour before.", "answer": ["had landed", "'d landed"], "explanation": "Backshift: Past Simple ➔ Past Perfect | ago ➔ before"},
+            {"direct": "I have cleaned the kitchen.", "prefix": "David told us that he", "suffix": "the kitchen.", "answer": ["had cleaned", "'d cleaned"], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
+            {"direct": "I will bring some cake.", "prefix": "Maria said that she", "suffix": "some cake.", "answer": ["would bring", "'d bring"], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
+            {"direct": "I can't find my glasses.", "prefix": "The old man complained that he", "suffix": "find his glasses.", "answer": ["could not", "couldn't"], "explanation": "Backshift: can't ➔ couldn't"}
         ]
     }
 
@@ -338,11 +338,17 @@ def evaluate_answer(user_val):
     norm_user = normalize(user_val)
     norm_prefix = normalize(q['prefix'])
     
-    # Prefix-Stripping
+    # Prefix-Stripping (Falls der Nutzer den Satzanfang mit abtippt)
     if norm_user.startswith(norm_prefix):
         processed = norm_user[len(norm_prefix):].strip()
     else:
         processed = norm_user
+
+    # Suffix-Stripping (Speziell für Backshift: Falls der Nutzer das Satzende mit abtippt)
+    if 'suffix' in q and q['suffix']:
+        norm_suffix = normalize(q['suffix'])
+        if processed.endswith(norm_suffix):
+            processed = processed[:-len(norm_suffix)].strip()
 
     # Double-That/If Correction
     prefix_words = norm_prefix.split()
@@ -359,7 +365,11 @@ def evaluate_answer(user_val):
         st.session_state.feedback = ("success", "✨ Richtig!")
     else:
         display_ans = answers[0]
-        st.session_state.feedback = ("error", f"Falsch. Korrekt: **{q['prefix']} {display_ans}**")
+        # Für Lückentexte geben wir den kompletten Lösungssatz als Extra-Hilfe aus
+        if 'suffix' in q and q['suffix']:
+            st.session_state.feedback = ("error", f"Falsch. Korrekt: **{display_ans}**\n\n*(Ganzer Satz: {q['prefix']} {display_ans} {q['suffix']})*")
+        else:
+            st.session_state.feedback = ("error", f"Falsch. Korrekt: **{q['prefix']} {display_ans}**")
 
 def submit_answer():
     user_val = st.session_state.get("temp_input", "").strip()
@@ -406,6 +416,13 @@ st.title("🇬🇧 Reported Speech Trainer")
 
 if st.session_state.step == "menu":
     st.subheader("Kategorie wählen:")
+    
+    # Backshift Button ganz oben und hervorgehoben
+    if st.button("Backshift of Tenses", use_container_width=True, type="primary"): 
+        start_exercise("Backshift")
+        
+    st.markdown("---")
+    
     col1, col2 = st.columns(2)
     with col1:
         if st.button("Statements", use_container_width=True): start_exercise("Statements")
@@ -413,10 +430,6 @@ if st.session_state.step == "menu":
     with col2:
         if st.button("Orders / Requests", use_container_width=True): start_exercise("Orders and Requests")
         if st.button("Mix Mode", use_container_width=True): start_exercise("Mix")
-    
-    st.markdown("---")
-    if st.button("Backshift of Tenses (Neu!)", use_container_width=True): 
-        start_exercise("Backshift")
 
 elif st.session_state.step == "quiz":
     q = st.session_state.current_pool[st.session_state.index]
@@ -432,11 +445,22 @@ elif st.session_state.step == "quiz":
     # Eingabefeld deaktivieren, wenn Feedback da ist, um Double-Callbacks zu verhindern
     input_disabled = st.session_state.feedback is not None
     
+    # UX Check für Lückentext (Backshift) vs Normal
+    if 'suffix' in q:
+        # Lückentext Darstellung
+        st.markdown(f"📝 *{q['prefix']}* `______` *{q['suffix']}*")
+        input_label = "Trage die fehlende Verbform ein:"
+        placeholder = "z.B. had gone"
+    else:
+        # Normale Darstellung
+        input_label = f"{q['prefix']} ..."
+        placeholder = "Antwort eingeben & Enter..."
+    
     st.text_input(
-        f"{q['prefix']} ...", 
+        input_label, 
         key="temp_input", 
         on_change=submit_answer,
-        placeholder="Antwort eingeben & Enter...",
+        placeholder=placeholder,
         disabled=input_disabled
     )
     

@@ -1,10 +1,11 @@
 import streamlit as st
 import random
 import re
+import streamlit.components.v1 as components
 
 # --- KONFIGURATION ---
 st.set_page_config(
-    page_title="Reported Speech Pro Trainer", 
+    page_title="The Snitch - Reported Speech Trainer", 
     page_icon="📝", 
     layout="centered"
 )
@@ -167,53 +168,53 @@ def get_data():
         ],
         "Questions": [
             {"direct": "Where is the station?", "prefix": "He asked me", "answer": "where the station was", "explanation": "is ➔ was"},
-            {"direct": "Do you like tea?", "prefix": "She asked him if", "answer": "he liked tea", "explanation": "do ➔ entfällt | like ➔ liked"},
+            {"direct": "Do you like tea?", "prefix": "She asked him", "answer": "if he liked tea", "explanation": "Ja/Nein-Frage ➔ if/whether | like ➔ liked"},
             {"direct": "What are you doing?", "prefix": "They asked us", "answer": "what we were doing", "explanation": "are ➔ were"},
-            {"direct": "Have you seen my keys?", "prefix": "He asked her if", "answer": "she had seen his keys", "explanation": "have ➔ had"},
-            {"direct": "Can you swim?", "prefix": "She asked me if", "answer": "I could swim", "explanation": "can ➔ could"},
+            {"direct": "Have you seen my keys?", "prefix": "He asked her", "answer": "if she had seen his keys", "explanation": "Ja/Nein-Frage ➔ if/whether | have ➔ had"},
+            {"direct": "Can you swim?", "prefix": "She asked me", "answer": "if I could swim", "explanation": "Ja/Nein-Frage ➔ if/whether | can ➔ could"},
             {"direct": "Why did you call?", "prefix": "He asked me", "answer": "why I had called", "explanation": "did call ➔ had called"},
-            {"direct": "Will it rain tomorrow?", "prefix": "She asked if", "answer": "it would rain the next day", "explanation": "will ➔ would"},
+            {"direct": "Will it rain tomorrow?", "prefix": "She asked", "answer": "if it would rain the next day", "explanation": "Ja/Nein-Frage ➔ if/whether | will ➔ would"},
             {"direct": "Where have you been?", "prefix": "My mom asked me", "answer": "where I had been", "explanation": "have ➔ had"},
-            {"direct": "Is he coming to the party?", "prefix": "She asked if", "answer": "he was coming to the party", "explanation": "is ➔ was"},
+            {"direct": "Is he coming to the party?", "prefix": "She asked", "answer": "if he was coming to the party", "explanation": "Ja/Nein-Frage ➔ if/whether | is ➔ was"},
             {"direct": "How much does this cost?", "prefix": "He asked", "answer": "how much that cost", "explanation": "this ➔ that"},
-            {"direct": "Do you live here?", "prefix": "She asked me if", "answer": "I lived there", "explanation": "here ➔ there"},
+            {"direct": "Do you live here?", "prefix": "She asked me", "answer": "if I lived there", "explanation": "Ja/Nein-Frage ➔ if/whether | here ➔ there"},
             {"direct": "When will the movie start?", "prefix": "He asked", "answer": "when the movie would start", "explanation": "will ➔ would"},
             {"direct": "What time is it?", "prefix": "She asked me", "answer": "what time it was", "explanation": "is ➔ was"},
-            {"direct": "Are you busy?", "prefix": "He asked if", "answer": "I was busy", "explanation": "are ➔ was"},
+            {"direct": "Are you busy?", "prefix": "He asked", "answer": "if I was busy", "explanation": "Ja/Nein-Frage ➔ if/whether | are ➔ was"},
             {"direct": "Where did you buy that car?", "prefix": "She asked him", "answer": "where he had bought that car", "explanation": "did ➔ had"},
-            {"direct": "Can I help you?", "prefix": "The waiter asked if", "answer": "he could help me", "explanation": "can ➔ could"},
+            {"direct": "Can I help you?", "prefix": "The waiter asked", "answer": "if he could help me", "explanation": "Ja/Nein-Frage ➔ if/whether | can ➔ could"},
             {"direct": "Why are you crying?", "prefix": "He asked her", "answer": "why she was crying", "explanation": "are ➔ was"},
-            {"direct": "Have you finished your homework?", "prefix": "The teacher asked if", "answer": "I had finished my homework", "explanation": "have ➔ had"},
+            {"direct": "Have you finished your homework?", "prefix": "The teacher asked", "answer": "if I had finished my homework", "explanation": "Ja/Nein-Frage ➔ if/whether | have ➔ had"},
             {"direct": "What do you want?", "prefix": "He asked me", "answer": "what I wanted", "explanation": "do ➔ entfällt"},
-            {"direct": "Did you see the news?", "prefix": "She asked if", "answer": "I had seen the news", "explanation": "did ➔ had"},
+            {"direct": "Did you see the news?", "prefix": "She asked", "answer": "if I had seen the news", "explanation": "Ja/Nein-Frage ➔ if/whether | did ➔ had"},
             {"direct": "How often do you exercise?", "prefix": "He asked me", "answer": "how often I exercised", "explanation": "do ➔ entfällt"},
-            {"direct": "Is there a bank nearby?", "prefix": "She asked", "answer": "if there was a bank nearby", "explanation": "is ➔ was"},
+            {"direct": "Is there a bank nearby?", "prefix": "She asked", "answer": "if there was a bank nearby", "explanation": "Ja/Nein-Frage ➔ if/whether | is ➔ was"},
             {"direct": "What will happen next?", "prefix": "He asked", "answer": "what would happen next", "explanation": "will ➔ would"},
-            {"direct": "Are they playing well?", "prefix": "She asked if", "answer": "they were playing well", "explanation": "are ➔ were"},
+            {"direct": "Are they playing well?", "prefix": "She asked", "answer": "if they were playing well", "explanation": "Ja/Nein-Frage ➔ if/whether | are ➔ were"},
             {"direct": "Where can I park?", "prefix": "He asked", "answer": "where he could park", "explanation": "can ➔ could"},
-            {"direct": "Do you have a pen?", "prefix": "She asked if", "answer": "I had a pen", "explanation": "do ➔ entfällt"},
+            {"direct": "Do you have a pen?", "prefix": "She asked", "answer": "if I had a pen", "explanation": "Ja/Nein-Frage ➔ if/whether"},
             {"direct": "Why is the shop closed?", "prefix": "He asked", "answer": "why the shop was closed", "explanation": "is ➔ was"},
             {"direct": "How did you find me?", "prefix": "She asked him", "answer": "how he had found her", "explanation": "did ➔ had"},
-            {"direct": "Will you be home late?", "prefix": "He asked if", "answer": "I would be home late", "explanation": "will ➔ would"},
-            {"direct": "Are we lost?", "prefix": "She asked if", "answer": "they were lost", "explanation": "are ➔ were"},
+            {"direct": "Will you be home late?", "prefix": "He asked", "answer": "if I would be home late", "explanation": "Ja/Nein-Frage ➔ if/whether | will ➔ would"},
+            {"direct": "Are we lost?", "prefix": "She asked", "answer": "if they were lost", "explanation": "Ja/Nein-Frage ➔ if/whether | are ➔ were"},
             {"direct": "What is your name?", "prefix": "He asked me", "answer": "what my name was", "explanation": "is ➔ was"},
-            {"direct": "Do you speak English?", "prefix": "She asked him if", "answer": "he spoke English", "explanation": "do ➔ entfällt"},
+            {"direct": "Do you speak English?", "prefix": "She asked him", "answer": "if he spoke English", "explanation": "Ja/Nein-Frage ➔ if/whether | do ➔ entfällt"},
             {"direct": "How long have you lived here?", "prefix": "He asked", "answer": "how long I had lived there", "explanation": "here ➔ there"},
             {"direct": "Where are you going?", "prefix": "She asked me", "answer": "where I was going", "explanation": "are ➔ was"},
-            {"direct": "Can we go now?", "prefix": "They asked if", "answer": "they could go then", "explanation": "now ➔ then"},
+            {"direct": "Can we go now?", "prefix": "They asked", "answer": "if they could go then", "explanation": "Ja/Nein-Frage ➔ if/whether | now ➔ then"},
             {"direct": "What were you thinking?", "prefix": "He asked me", "answer": "what I had been thinking", "explanation": "were ➔ had been"},
-            {"direct": "Is it cold outside?", "prefix": "She asked if", "answer": "it was cold outside", "explanation": "is ➔ was"},
-            {"direct": "Did you enjoy the meal?", "prefix": "The host asked if", "answer": "we had enjoyed the meal", "explanation": "did ➔ had"},
+            {"direct": "Is it cold outside?", "prefix": "She asked", "answer": "if it was cold outside", "explanation": "Ja/Nein-Frage ➔ if/whether | is ➔ was"},
+            {"direct": "Did you enjoy the meal?", "prefix": "The host asked", "answer": "if we had enjoyed the meal", "explanation": "Ja/Nein-Frage ➔ if/whether | did ➔ had"},
             {"direct": "Why can't you come?", "prefix": "He asked me", "answer": ["why I couldn't come", "why I could not come"], "explanation": "can't ➔ couldn't"},
             {"direct": "Who told you that?", "prefix": "She asked", "answer": "who had told him that", "explanation": "told ➔ had told"},
-            {"direct": "Are you coming with us?", "prefix": "He asked if", "answer": "I was coming with them", "explanation": "us ➔ them"},
+            {"direct": "Are you coming with us?", "prefix": "He asked", "answer": "if I was coming with them", "explanation": "Ja/Nein-Frage ➔ if/whether | us ➔ them"},
             {"direct": "Where does she work?", "prefix": "He asked", "answer": "where she worked", "explanation": "does ➔ entfällt"},
-            {"direct": "Have you ever been to Paris?", "prefix": "She asked if", "answer": "I had ever been to Paris", "explanation": "have ➔ had"},
+            {"direct": "Have you ever been to Paris?", "prefix": "She asked", "answer": "if I had ever been to Paris", "explanation": "Ja/Nein-Frage ➔ if/whether | have ➔ had"},
             {"direct": "What did you say?", "prefix": "He asked me", "answer": "what I had said", "explanation": "did ➔ had"},
-            {"direct": "Is your father at home?", "prefix": "She asked if", "answer": "my father was at home", "explanation": "is ➔ was"},
+            {"direct": "Is your father at home?", "prefix": "She asked", "answer": "if my father was at home", "explanation": "Ja/Nein-Frage ➔ if/whether | is ➔ was"},
             {"direct": "How many books did you buy?", "prefix": "He asked", "answer": "how many books I had bought", "explanation": "did ➔ had"},
-            {"direct": "Do you like chocolate?", "prefix": "She asked if", "answer": "I liked chocolate", "explanation": "do ➔ entfällt"},
-            {"direct": "Will you marry me?", "prefix": "He asked her if", "answer": "she would marry him", "explanation": "will ➔ would"},
+            {"direct": "Do you like chocolate?", "prefix": "She asked", "answer": "if I liked chocolate", "explanation": "Ja/Nein-Frage ➔ if/whether | do ➔ entfällt"},
+            {"direct": "Will you marry me?", "prefix": "He asked her", "answer": "if she would marry him", "explanation": "Ja/Nein-Frage ➔ if/whether | will ➔ would"},
             {"direct": "What's wrong?", "prefix": "She asked", "answer": "what was wrong", "explanation": "is ➔ was"},
             {"direct": "Where did I leave my phone?", "prefix": "He asked himself", "answer": "where he had left his phone", "explanation": "did ➔ had"}
         ],
@@ -412,7 +413,16 @@ def start_exercise(category):
 # --- APP START ---
 if 'step' not in st.session_state: st.session_state.step = "menu"
 
-st.title("🇬🇧 Reported Speech Trainer")
+# --- KOPFZEILE MIT TITEL UND LOGO (Responsive) ---
+col1, col2 = st.columns([4, 1]) # Spalten-Verhältnis 4:1
+with col1:
+    st.title("🇬🇧 The Snitch - Reported Speech Trainer")
+with col2:
+    try:
+        # Logo einfügen. use_container_width=True sorgt dafür, dass es auf Handys nicht überlappt
+        st.image("The Snitch.jpg", use_container_width=True)
+    except FileNotFoundError:
+        st.warning("Logo nicht gefunden.")
 
 if st.session_state.step == "menu":
     st.subheader("Kategorie wählen:")
@@ -463,6 +473,23 @@ elif st.session_state.step == "quiz":
         placeholder=placeholder,
         disabled=input_disabled
     )
+    
+    # --- NEU: Autokorrektur, Autocapitalize und Spellcheck fürs Handy deaktivieren ---
+    components.html(
+        """
+        <script>
+        const inputs = window.parent.document.querySelectorAll('input[type="text"]');
+        inputs.forEach(input => {
+            input.setAttribute('autocorrect', 'off');
+            input.setAttribute('autocapitalize', 'off');
+            input.setAttribute('spellcheck', 'false');
+        });
+        </script>
+        """,
+        height=0,
+        width=0
+    )
+    # ----------------------------------------------------------------------------------
     
     # Der verlässliche Überspringen-Button
     if not st.session_state.feedback:

@@ -210,3 +210,354 @@ def get_data():
             {"direct": "We will enjoy the show.", "prefix": "They said that", "answer": "they would enjoy the show", "explanation": "will ➔ would"},
             {"direct": "I made a mistake.", "prefix": "The student said that", "answer": "he had made a mistake", "explanation": "made ➔ had made"},
             {"direct": "I am working on a project.", "prefix": "He said that", "answer": "he was working on a project", "explanation": "am ➔ was"},
+            {"direct": "My parents are proud of me.", "prefix": "She said that", "answer": "her parents were proud of her", "explanation": "are ➔ were"},
+            {"direct": "I have to finish this.", "prefix": "He said that", "answer": "he had to finish that", "explanation": "have to ➔ had to"},
+            {"direct": "I won't forget your birthday.", "prefix": "She said that", "answer": ["she wouldn't forget my birthday", "she would not forget my birthday"], "explanation": "won't ➔ wouldn't"},
+            {"direct": "The movie was very boring.", "prefix": "They said that", "answer": "the movie had been very boring", "explanation": "was ➔ had been"},
+            {"direct": "I didn't understand the instructions.", "prefix": "He said that", "answer": ["he hadn't understood the instructions", "he had not understood the instructions"], "explanation": "didn't ➔ hadn't"}
+        ],
+        "Questions": [
+            {"direct": "Where is the station?", "prefix": "He asked me", "answer": "where the station was", "explanation": "is ➔ was"},
+            {"direct": "Do you like tea?", "prefix": "She asked him", "answer": "if he liked tea", "explanation": "Ja/Nein-Frage ➔ if/whether | like ➔ liked"},
+            {"direct": "What are you doing?", "prefix": "They asked us", "answer": "what we were doing", "explanation": "are ➔ were"},
+            {"direct": "Have you seen my keys?", "prefix": "He asked her", "answer": "if she had seen his keys", "explanation": "Ja/Nein-Frage ➔ if/whether | have ➔ had"},
+            {"direct": "Can you swim?", "prefix": "She asked me", "answer": "if I could swim", "explanation": "Ja/Nein-Frage ➔ if/whether | can ➔ could"},
+            {"direct": "Why did you call?", "prefix": "He asked me", "answer": "why I had called", "explanation": "did call ➔ had called"},
+            {"direct": "Will it rain tomorrow?", "prefix": "She asked", "answer": "if it would rain the next day", "explanation": "Ja/Nein-Frage ➔ if/whether | will ➔ would"},
+            {"direct": "Where have you been?", "prefix": "My mom asked me", "answer": "where I had been", "explanation": "have ➔ had"},
+            {"direct": "Is he coming to the party?", "prefix": "She asked", "answer": "if he was coming to the party", "explanation": "Ja/Nein-Frage ➔ if/whether | is ➔ was"},
+            {"direct": "How much does this cost?", "prefix": "He asked", "answer": "how much that cost", "explanation": "this ➔ that"},
+            {"direct": "Do you live here?", "prefix": "She asked me", "answer": "if I lived there", "explanation": "Ja/Nein-Frage ➔ if/whether | here ➔ there"},
+            {"direct": "When will the movie start?", "prefix": "He asked", "answer": "when the movie would start", "explanation": "will ➔ would"},
+            {"direct": "What time is it?", "prefix": "She asked me", "answer": "what time it was", "explanation": "is ➔ was"},
+            {"direct": "Are you busy?", "prefix": "He asked", "answer": "if I was busy", "explanation": "Ja/Nein-Frage ➔ if/whether | are ➔ was"},
+            {"direct": "Where did you buy that car?", "prefix": "She asked him", "answer": "where he had bought that car", "explanation": "did ➔ had"},
+            {"direct": "Can I help you?", "prefix": "The waiter asked", "answer": "if he could help me", "explanation": "Ja/Nein-Frage ➔ if/whether | can ➔ could"},
+            {"direct": "Why are you crying?", "prefix": "He asked her", "answer": "why she was crying", "explanation": "are ➔ was"},
+            {"direct": "Have you finished your homework?", "prefix": "The teacher asked", "answer": "if I had finished my homework", "explanation": "Ja/Nein-Frage ➔ if/whether | have ➔ had"},
+            {"direct": "What do you want?", "prefix": "He asked me", "answer": "what I wanted", "explanation": "do ➔ entfällt"},
+            {"direct": "Did you see the news?", "prefix": "She asked", "answer": "if I had seen the news", "explanation": "Ja/Nein-Frage ➔ if/whether | did ➔ had"},
+            {"direct": "How often do you exercise?", "prefix": "He asked me", "answer": "how often I exercised", "explanation": "do ➔ entfällt"},
+            {"direct": "Is there a bank nearby?", "prefix": "She asked", "answer": "if there was a bank nearby", "explanation": "Ja/Nein-Frage ➔ if/whether | is ➔ was"},
+            {"direct": "What will happen next?", "prefix": "He asked", "answer": "what would happen next", "explanation": "will ➔ would"},
+            {"direct": "Are they playing well?", "prefix": "She asked", "answer": "if they were playing well", "explanation": "Ja/Nein-Frage ➔ if/whether | are ➔ were"},
+            {"direct": "Where can I park?", "prefix": "He asked", "answer": "where he could park", "explanation": "can ➔ could"},
+            {"direct": "Do you have a pen?", "prefix": "She asked", "answer": "if I had a pen", "explanation": "Ja/Nein-Frage ➔ if/whether"},
+            {"direct": "Why is the shop closed?", "prefix": "He asked", "answer": "why the shop was closed", "explanation": "is ➔ was"},
+            {"direct": "How did you find me?", "prefix": "She asked him", "answer": "how he had found her", "explanation": "did ➔ had"},
+            {"direct": "Will you be home late?", "prefix": "He asked", "answer": "if I would be home late", "explanation": "Ja/Nein-Frage ➔ if/whether | will ➔ would"},
+            {"direct": "Are we lost?", "prefix": "She asked", "answer": "if they were lost", "explanation": "Ja/Nein-Frage ➔ if/whether | are ➔ were"},
+            {"direct": "What is your name?", "prefix": "He asked me", "answer": "what my name was", "explanation": "is ➔ was"},
+            {"direct": "Do you speak English?", "prefix": "She asked him", "answer": "if he spoke English", "explanation": "Ja/Nein-Frage ➔ if/whether | do ➔ entfällt"},
+            {"direct": "How long have you lived here?", "prefix": "He asked", "answer": "how long I had lived there", "explanation": "here ➔ there"},
+            {"direct": "Where are you going?", "prefix": "She asked me", "answer": "where I was going", "explanation": "are ➔ was"},
+            {"direct": "Can we go now?", "prefix": "They asked", "answer": "if they could go then", "explanation": "Ja/Nein-Frage ➔ if/whether | now ➔ then"},
+            {"direct": "What were you thinking?", "prefix": "He asked me", "answer": "what I had been thinking", "explanation": "were ➔ had been"},
+            {"direct": "Is it cold outside?", "prefix": "She asked", "answer": "if it was cold outside", "explanation": "Ja/Nein-Frage ➔ if/whether | is ➔ was"},
+            {"direct": "Did you enjoy the meal?", "prefix": "The host asked", "answer": "if we had enjoyed the meal", "explanation": "Ja/Nein-Frage ➔ if/whether | did ➔ had"},
+            {"direct": "Why can't you come?", "prefix": "He asked me", "answer": ["why I couldn't come", "why I could not come"], "explanation": "can't ➔ couldn't"},
+            {"direct": "Who told you that?", "prefix": "She asked", "answer": "who had told him that", "explanation": "told ➔ had told"},
+            {"direct": "Are you coming with us?", "prefix": "He asked", "answer": "if I was coming with them", "explanation": "Ja/Nein-Frage ➔ if/whether | us ➔ them"},
+            {"direct": "Where does she work?", "prefix": "He asked", "answer": "where she worked", "explanation": "does ➔ entfällt"},
+            {"direct": "Have you ever been to Paris?", "prefix": "She asked", "answer": "if I had ever been to Paris", "explanation": "Ja/Nein-Frage ➔ if/whether | have ➔ had"},
+            {"direct": "What did you say?", "prefix": "He asked me", "answer": "what I had said", "explanation": "did ➔ had"},
+            {"direct": "Is your father at home?", "prefix": "She asked", "answer": "if my father was at home", "explanation": "Ja/Nein-Frage ➔ if/whether | is ➔ was"},
+            {"direct": "How many books did you buy?", "prefix": "He asked", "answer": "how many books I had bought", "explanation": "did ➔ had"},
+            {"direct": "Do you like chocolate?", "prefix": "She asked", "answer": "if I liked chocolate", "explanation": "Ja/Nein-Frage ➔ if/whether | do ➔ entfällt"},
+            {"direct": "Will you marry me?", "prefix": "He asked her", "answer": "if she would marry him", "explanation": "Ja/Nein-Frage ➔ if/whether | will ➔ would"},
+            {"direct": "What's wrong?", "prefix": "She asked", "answer": "what was wrong", "explanation": "is ➔ was"},
+            {"direct": "Where did I leave my phone?", "prefix": "He asked himself", "answer": "where he had left his phone", "explanation": "did ➔ had"}
+        ],
+        "Orders and Requests": [
+            {"direct": "Open the window!", "prefix": "He told me", "answer": "to open the window", "explanation": "Infinitiv mit 'to'"},
+            {"direct": "Don't touch that!", "prefix": "She warned me", "answer": "not to touch that", "explanation": "Verneint: 'not to'"},
+            {"direct": "Please sit down.", "prefix": "He asked us", "answer": "to sit down", "explanation": "to-Infinitiv"},
+            {"direct": "Stop talking!", "prefix": "The teacher told them", "answer": "to stop talking", "explanation": "to-Infinitiv"},
+            {"direct": "Clean your room!", "prefix": "His mother told him", "answer": "to clean his room", "explanation": "to-Infinitiv"},
+            {"direct": "Don't be late!", "prefix": "She told me", "answer": "not to be late", "explanation": "not to"},
+            {"direct": "Give me the book.", "prefix": "He asked me", "answer": "to give him the book", "explanation": "me ➔ him"},
+            {"direct": "Hurry up!", "prefix": "She told us", "answer": "to hurry up", "explanation": "to-Infinitiv"},
+            {"direct": "Please help me.", "prefix": "He asked her", "answer": "to help him", "explanation": "me ➔ him"},
+            {"direct": "Don't smoke here.", "prefix": "The man told us", "answer": "not to smoke there", "explanation": "here ➔ there"},
+            {"direct": "Wait for me!", "prefix": "She told him", "answer": "to wait for her", "explanation": "me ➔ her"},
+            {"direct": "Listen carefully.", "prefix": "The speaker told them", "answer": "to listen carefully", "explanation": "to-Infinitiv"},
+            {"direct": "Don't forget the milk.", "prefix": "She reminded me", "answer": "not to forget the milk", "explanation": "not to"},
+            {"direct": "Eat your vegetables!", "prefix": "The father told him", "answer": "to eat his vegetables", "explanation": "to-Infinitiv"},
+            {"direct": "Please call me later.", "prefix": "She asked me", "answer": "to call her later", "explanation": "me ➔ her"},
+            {"direct": "Don't park here.", "prefix": "The officer told him", "answer": "not to park there", "explanation": "here ➔ there"},
+            {"direct": "Show me your passport.", "prefix": "The official told her", "answer": "to show him her passport", "explanation": "me ➔ him"},
+            {"direct": "Be quiet!", "prefix": "He told them", "answer": "to be quiet", "explanation": "to-Infinitiv"},
+            {"direct": "Don't tell anyone.", "prefix": "She told me", "answer": "not to tell anyone", "explanation": "not to"},
+            {"direct": "Turn off the lights.", "prefix": "He told us", "answer": "to turn off the lights", "explanation": "to-Infinitiv"},
+            {"direct": "Please lend me money.", "prefix": "He asked his friend", "answer": "to lend him money", "explanation": "me ➔ him"},
+            {"direct": "Don't drink the water.", "prefix": "They warned us", "answer": "not to drink the water", "explanation": "not to"},
+            {"direct": "Fasten your seatbelts.", "prefix": "The pilot told them", "answer": "to fasten their seatbelts", "explanation": "your ➔ their"},
+            {"direct": "Come here!", "prefix": "The boss told me", "answer": "to come there", "explanation": "here ➔ there"},
+            {"direct": "Don't make a mess.", "prefix": "She told the kids", "answer": "not to make a mess", "explanation": "not to"},
+            {"direct": "Take a deep breath.", "prefix": "The doctor told him", "answer": "to take a deep breath", "explanation": "to-Infinitiv"},
+            {"direct": "Please send me the file.", "prefix": "She asked him", "answer": "to send her the file", "explanation": "me ➔ her"},
+            {"direct": "Don't look back.", "prefix": "He told her", "answer": "not to look back", "explanation": "not to"},
+            {"direct": "Put the gun down!", "prefix": "The police told him", "answer": "to put the gun down", "explanation": "to-Infinitiv"},
+            {"direct": "Read the instructions.", "prefix": "She told me", "answer": "to read the instructions", "explanation": "to-Infinitiv"},
+            {"direct": "Don't feed the animals.", "prefix": "The sign told us", "answer": "not to feed the animals", "explanation": "not to"},
+            {"direct": "Follow me.", "prefix": "The guide told them", "answer": "to follow him", "explanation": "me ➔ him"},
+            {"direct": "Please be patient.", "prefix": "She asked us", "answer": "to be patient", "explanation": "to-Infinitiv"},
+            {"direct": "Don't worry so much.", "prefix": "He told me", "answer": "not to worry so much", "explanation": "not to"},
+            {"direct": "Sign the document.", "prefix": "The lawyer told her", "answer": "to sign the document", "explanation": "to-Infinitiv"},
+            {"direct": "Don't scream.", "prefix": "He told her", "answer": "not to scream", "explanation": "not to"},
+            {"direct": "Buckle up!", "prefix": "The driver told them", "answer": "to buckle up", "explanation": "to-Infinitiv"},
+            {"direct": "Don't open the door.", "prefix": "She told him", "answer": "not to open the door", "explanation": "not to"},
+            {"direct": "Try again.", "prefix": "The coach told me", "answer": "to try again", "explanation": "to-Infinitiv"},
+            {"direct": "Please hold the line.", "prefix": "The secretary asked him", "answer": "to hold the line", "explanation": "to-Infinitiv"},
+            {"direct": "Don't use your phone.", "prefix": "The teacher told them", "answer": "not to use their phones", "explanation": "your ➔ their"},
+            {"direct": "Go to bed!", "prefix": "The mother told him", "answer": "to go to bed", "explanation": "to-Infinitiv"},
+            {"direct": "Don't jump!", "prefix": "They told him", "answer": "not to jump", "explanation": "not to"},
+            {"direct": "Pass the salt, please.", "prefix": "He asked her", "answer": "to pass the salt", "explanation": "to-Infinitiv"},
+            {"direct": "Don't cry.", "prefix": "She told me", "answer": "not to cry", "explanation": "not to"},
+            {"direct": "Watch your step.", "prefix": "He told us", "answer": "to watch our step", "explanation": "to-Infinitiv"},
+            {"direct": "Don't run.", "prefix": "The father told him", "answer": "not to run", "explanation": "not to"},
+            {"direct": "Tell me the truth.", "prefix": "She told him", "answer": "to tell her the truth", "explanation": "me ➔ her"},
+            {"direct": "Don't drive so fast.", "prefix": "She told him", "answer": "not to drive so fast", "explanation": "not to"},
+            {"direct": "Please bring wine.", "prefix": "He asked them", "answer": "to bring wine", "explanation": "to-Infinitiv"}
+        ],
+        "Backshift": [
+            {"direct": "I work in a bank.", "prefix": "Paul said that he", "suffix": "in a bank.", "answer": "worked", "explanation": "Backshift: Present Simple ➔ Past Simple"},
+            {"direct": "We are watching a movie.", "prefix": "They said that they", "suffix": "a movie.", "answer": "were watching", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
+            {"direct": "She lost her keys yesterday.", "prefix": "I said that she", "suffix": "her keys the day before.", "answer": ["had lost", "'d lost"], "explanation": "Backshift: Past Simple ➔ Past Perfect"},
+            {"direct": "I have finished my homework.", "prefix": "Sarah told me that she", "suffix": "her homework.", "answer": ["had finished", "'d finished"], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
+            {"direct": "I will help you with the bags.", "prefix": "He said that he", "suffix": "me with the bags.", "answer": ["would help", "'d help"], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
+            {"direct": "I can swim very well.", "prefix": "Leo said that he", "suffix": "swim very well.", "answer": "could", "explanation": "Backshift: can ➔ could"},
+            {"direct": "We must go home now.", "prefix": "They explained that they", "suffix": "go home then.", "answer": "had to", "explanation": "Backshift: must ➔ had to | now ➔ then"},
+            {"direct": "I am writing an email.", "prefix": "Tim said that he", "suffix": "an email.", "answer": "was writing", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
+            {"direct": "They live in Berlin.", "prefix": "She said that they", "suffix": "in Berlin.", "answer": "lived", "explanation": "Backshift: Present Simple ➔ Past Simple"},
+            {"direct": "I bought a new car last week.", "prefix": "Marc said that he", "suffix": "a new car the week before.", "answer": ["had bought", "'d bought"], "explanation": "Backshift: Past Simple ➔ Past Perfect"},
+            {"direct": "We have visited Italy twice.", "prefix": "They explained that they", "suffix": "Italy twice.", "answer": ["had visited", "'d visited"], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
+            {"direct": "It will rain later.", "prefix": "The report said that it", "suffix": "rain later.", "answer": ["would rain", "'d rain"], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
+            {"direct": "You may leave early.", "prefix": "The teacher said that I", "suffix": "leave early.", "answer": "might", "explanation": "Backshift: may ➔ might"},
+            {"direct": "I don't like coffee.", "prefix": "Elena said that she", "suffix": "coffee.", "answer": ["did not like", "didn't like"], "explanation": "Backshift: Present Simple (neg) ➔ Past Simple"},
+            {"direct": "We are listening to music.", "prefix": "The girls said that they", "suffix": "to music.", "answer": "were listening", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
+            {"direct": "He didn't see the sign.", "prefix": "I said that he", "suffix": "the sign.", "answer": ["had not seen", "hadn't seen"], "explanation": "Backshift: Past Simple (neg) ➔ Past Perfect"},
+            {"direct": "I have lost my passport.", "prefix": "The tourist told me that he", "suffix": "his passport.", "answer": ["had lost", "'d lost"], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
+            {"direct": "I won't be late.", "prefix": "Julia promised that she", "suffix": "late.", "answer": ["would not be", "wouldn't be"], "explanation": "Backshift: Will-Future (neg) ➔ Would-Conditional"},
+            {"direct": "I must study for the test.", "prefix": "Ben said that he", "suffix": "study for the test.", "answer": "had to", "explanation": "Backshift: must ➔ had to"},
+            {"direct": "The train arrives at 8.", "prefix": "The clerk said that the train", "suffix": "at 8.", "answer": "arrived", "explanation": "Backshift: Present Simple ➔ Past Simple"},
+            {"direct": "We are eating lunch.", "prefix": "They told us that they", "suffix": "lunch.", "answer": "were eating", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
+            {"direct": "I went to the doctor yesterday.", "prefix": "Sam said that he", "suffix": "to the doctor the day before.", "answer": ["had gone", "'d gone"], "explanation": "Backshift: Past Simple ➔ Past Perfect"},
+            {"direct": "I haven't seen that film yet.", "prefix": "Lisa said that she", "suffix": "that film yet.", "answer": ["had not seen", "hadn't seen"], "explanation": "Backshift: Present Perfect (neg) ➔ Past Perfect"},
+            {"direct": "I will send you a postcard.", "prefix": "Clara promised that she", "suffix": "me a postcard.", "answer": ["would send", "'d send"], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
+            {"direct": "I can't come to the party.", "prefix": "Tom said that he", "suffix": "come to the party.", "answer": ["could not", "couldn't"], "explanation": "Backshift: can't ➔ couldn't"},
+            {"direct": "I play the guitar every day.", "prefix": "Anna said that she", "suffix": "the guitar every day.", "answer": "played", "explanation": "Backshift: Present Simple ➔ Past Simple"},
+            {"direct": "We are making pizza.", "prefix": "The boys told us that they", "suffix": "pizza.", "answer": "were making", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
+            {"direct": "They missed the bus.", "prefix": "I explained that they", "suffix": "the bus.", "answer": ["had missed", "'d missed"], "explanation": "Backshift: Past Simple ➔ Past Perfect"},
+            {"direct": "I have never been to London.", "prefix": "Mike said that he", "suffix": "to London.", "answer": ["had never been", "'d never been"], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
+            {"direct": "I will call you later.", "prefix": "My mom promised that she", "suffix": "me later.", "answer": ["would call", "'d call"], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
+            {"direct": "I can speak three languages.", "prefix": "The student said that she", "suffix": "speak three languages.", "answer": "could", "explanation": "Backshift: can ➔ could"},
+            {"direct": "You must wear a helmet.", "prefix": "The officer told him that he", "suffix": "wear a helmet.", "answer": "had to", "explanation": "Backshift: must ➔ had to"},
+            {"direct": "The water is very cold.", "prefix": "The swimmer said that the water", "suffix": "very cold.", "answer": "was", "explanation": "Backshift: am/is/are ➔ was/were"},
+            {"direct": "We are waiting for the taxi.", "prefix": "They said that they", "suffix": "for the taxi.", "answer": "were waiting", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
+            {"direct": "I saw a famous actor yesterday.", "prefix": "Sophie told me that she", "suffix": "a famous actor the day before.", "answer": ["had seen", "'d seen"], "explanation": "Backshift: Past Simple ➔ Past Perfect"},
+            {"direct": "He has already left the office.", "prefix": "The secretary said that he", "suffix": "the office.", "answer": ["had already left", "'d already left"], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
+            {"direct": "We will win the match.", "prefix": "The coach was sure that they", "suffix": "the match.", "answer": ["would win", "'d win"], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
+            {"direct": "You may use my laptop.", "prefix": "Dad said that I", "suffix": "use his laptop.", "answer": "might", "explanation": "Backshift: may ➔ might"},
+            {"direct": "I don't know the answer.", "prefix": "The boy admitted that he", "suffix": "the answer.", "answer": ["did not know", "didn't know"], "explanation": "Backshift: Present Simple (neg) ➔ Past Simple"},
+            {"direct": "They are playing football in the park.", "prefix": "Lucy said that they", "suffix": "football in the park.", "answer": "were playing", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
+            {"direct": "I didn't go to the party.", "prefix": "Kevin said that he", "suffix": "to the party.", "answer": ["had not gone", "hadn't gone"], "explanation": "Backshift: Past Simple (neg) ➔ Past Perfect"},
+            {"direct": "I have forgotten my umbrella.", "prefix": "The woman said that she", "suffix": "her umbrella.", "answer": ["had forgotten", "'d forgotten"], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
+            {"direct": "I won't tell anyone your secret.", "prefix": "Emily promised that she", "suffix": "anyone my secret.", "answer": ["would not tell", "wouldn't tell"], "explanation": "Backshift: Will-Future (neg) ➔ Would-Conditional"},
+            {"direct": "I must finish this report.", "prefix": "The manager explained that he", "suffix": "that report.", "answer": "had to finish", "explanation": "Backshift: must ➔ had to | this ➔ that"},
+            {"direct": "We like our new house.", "prefix": "They said that they", "suffix": "their new house.", "answer": "liked", "explanation": "Backshift: Present Simple ➔ Past Simple"},
+            {"direct": "It is snowing outside.", "prefix": "Grandpa said that it", "suffix": "outside.", "answer": "was snowing", "explanation": "Backshift: is snowing ➔ was snowing"},
+            {"direct": "The plane landed an hour ago.", "prefix": "The pilot said that the plane", "suffix": "an hour before.", "answer": ["had landed", "'d landed"], "explanation": "Backshift: Past Simple ➔ Past Perfect | ago ➔ before"},
+            {"direct": "I have cleaned the kitchen.", "prefix": "David told us that he", "suffix": "the kitchen.", "answer": ["had cleaned", "'d cleaned"], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
+            {"direct": "I will bring some cake.", "prefix": "Maria said that she", "suffix": "some cake.", "answer": ["would bring", "'d bring"], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
+            {"direct": "I can't find my glasses.", "prefix": "The old man complained that he", "suffix": "find his glasses.", "answer": ["could not", "couldn't"], "explanation": "Backshift: can't ➔ couldn't"}
+        ]
+    }
+
+# --- LOGIK ---
+def normalize(text):
+    if not text: return ""
+    text = text.lower().strip()
+    # Typografische Apostrophe (iOS/Mac) korrigieren
+    text = text.replace("’", "'").replace("´", "'").replace("`", "'")
+    text = text.replace("whether", "if")
+    text = re.sub(r'[.!?;]+$', '', text)
+    return re.sub(r'\s+', ' ', text)
+
+def evaluate_answer(user_val):
+    q = st.session_state.current_pool[st.session_state.index]
+    norm_user = normalize(user_val)
+    norm_prefix = normalize(q['prefix'])
+    
+    # Prefix-Stripping (Falls der Nutzer den Satzanfang mit abtippt)
+    if norm_user.startswith(norm_prefix):
+        processed = norm_user[len(norm_prefix):].strip()
+    else:
+        processed = norm_user
+
+    # Suffix-Stripping (Speziell für Backshift: Falls der Nutzer das Satzende mit abtippt)
+    if 'suffix' in q and q['suffix']:
+        norm_suffix = normalize(q['suffix'])
+        if processed.endswith(norm_suffix):
+            processed = processed[:-len(norm_suffix)].strip()
+
+    # Double-That/If Correction
+    prefix_words = norm_prefix.split()
+    if prefix_words:
+        last_word = prefix_words[-1]
+        if processed.startswith(last_word + " "):
+            processed = processed[len(last_word):].strip()
+
+    answers = q['answer']
+    if isinstance(answers, str): answers = [answers]
+    
+    if any(normalize(processed) == normalize(ans) for ans in answers):
+        st.session_state.score += 1
+        st.session_state.feedback = ("success", "✨ Richtig!")
+    else:
+        display_ans = answers[0]
+        # Für Lückentexte geben wir den kompletten Lösungssatz als Extra-Hilfe aus
+        if 'suffix' in q and q['suffix']:
+            st.session_state.feedback = ("error", f"Falsch. Korrekt: **{display_ans}**\n\n*(Ganzer Satz: {q['prefix']} {display_ans} {q['suffix']})*")
+        else:
+            st.session_state.feedback = ("error", f"Falsch. Korrekt: **{q['prefix']} {display_ans}**")
+
+def submit_answer():
+    user_val = st.session_state.get("temp_input", "").strip()
+    # Leere Eingaben mit Enter ignorieren wir hier (verhindert feststecken)
+    if not user_val: return
+    evaluate_answer(user_val)
+
+def skip_question():
+    # Wird vom Button aufgerufen, wenn man nicht weiterweiß
+    evaluate_answer("[LEER]")
+
+def next_question():
+    st.session_state.index += 1
+    st.session_state.feedback = None
+    st.session_state.temp_input = ""
+    if st.session_state.index >= len(st.session_state.current_pool):
+        st.session_state.step = "result"
+
+def start_exercise(category):
+    data = get_data()
+    st.session_state.last_category = category
+    
+    # Fairer Mix-Mode aus allen Pools gleichmäßig
+    if category == "Mix":
+        pool = []
+        for cat in ["Statements", "Questions", "Orders and Requests", "Backshift"]:
+            cat_pool = data[cat]
+            pool.extend(random.sample(cat_pool, min(4, len(cat_pool))))
+        random.shuffle(pool)
+        st.session_state.current_pool = pool[:15]
+    else:
+        pool = data[category]
+        st.session_state.current_pool = random.sample(pool, min(15, len(pool)))
+        
+    st.session_state.index = 0
+    st.session_state.score = 0
+    st.session_state.step = "quiz"
+    st.session_state.feedback = None
+
+# --- APP START ---
+if 'step' not in st.session_state: st.session_state.step = "menu"
+
+# --- KOPFZEILE MIT TITEL UND LOGO (Responsive) ---
+col1, col2 = st.columns([7, 3]) # Spalten-Verhältnis 7:3 (Logo nimmt jetzt ca. 30% des Platzes ein statt vorher 20%)
+with col1:
+    st.title("🇬🇧 The Snitch - Reported Speech Trainer")
+with col2:
+    try:
+        # Dateiname an das hochgeladene Graffiti-Logo angepasst
+        st.image("The Snitch.jpg", use_container_width=True)
+    except FileNotFoundError:
+        st.warning("Logo nicht gefunden.")
+
+if st.session_state.step == "menu":
+    st.subheader("Kategorie wählen:")
+    
+    # Backshift Button ganz oben und hervorgehoben
+    if st.button("Backshift of Tenses", use_container_width=True, type="primary"): 
+        start_exercise("Backshift")
+        
+    st.markdown("---")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Statements", use_container_width=True): start_exercise("Statements")
+        if st.button("Questions", use_container_width=True): start_exercise("Questions")
+    with col2:
+        if st.button("Orders / Requests", use_container_width=True): start_exercise("Orders and Requests")
+        if st.button("Mix Mode", use_container_width=True): start_exercise("Mix")
+
+elif st.session_state.step == "quiz":
+    q = st.session_state.current_pool[st.session_state.index]
+    total_q = len(st.session_state.current_pool)
+    
+    st.progress(st.session_state.index / total_q)
+    st.write(f"**Satz {st.session_state.index + 1} / {total_q}**")
+    
+    # Visuelles Bereinigen von abschließenden Kommas
+    clean_direct = q['direct'].rstrip(', ')
+    st.info(f"Direkt: **\"{clean_direct}\"**")
+    
+    # Eingabefeld deaktivieren, wenn Feedback da ist, um Double-Callbacks zu verhindern
+    input_disabled = st.session_state.feedback is not None
+    
+    # UX Check für Lückentext (Backshift) vs Normal
+    if 'suffix' in q:
+        # Lückentext Darstellung
+        st.markdown(f"📝 *{q['prefix']}* `______` *{q['suffix']}*")
+        input_label = "Trage die fehlende Verbform ein:"
+        placeholder = "z.B. had gone"
+    else:
+        # Normale Darstellung
+        input_label = f"{q['prefix']} ..."
+        placeholder = "Antwort eingeben & Enter..."
+    
+    st.text_input(
+        input_label, 
+        key="temp_input", 
+        on_change=submit_answer,
+        placeholder=placeholder,
+        disabled=input_disabled
+    )
+    
+    # --- Autokorrektur, Autocapitalize und Spellcheck fürs Handy deaktivieren ---
+    components.html(
+        """
+        <script>
+        const inputs = window.parent.document.querySelectorAll('input[type="text"]');
+        inputs.forEach(input => {
+            input.setAttribute('autocorrect', 'off');
+            input.setAttribute('autocapitalize', 'off');
+            input.setAttribute('spellcheck', 'false');
+        });
+        </script>
+        """,
+        height=0,
+        width=0
+    )
+    # ----------------------------------------------------------------------------------
+    
+    # Der verlässliche Überspringen-Button
+    if not st.session_state.feedback:
+        st.button("Ich weiß es nicht / Lösung zeigen", on_click=skip_question)
+    
+    # Feedback & Weiter-Button
+    if st.session_state.feedback:
+        t, m = st.session_state.feedback
+        if t == "success": st.success(m)
+        else:
+            st.error(m)
+            st.warning(f"💡 Tipp: {q['explanation']}")
+        st.button("Weiter", on_click=next_question, type="primary")
+
+elif st.session_state.step == "result":
+    total_q = len(st.session_state.current_pool)
+    st.balloons()
+    st.header("Ergebnis")
+    st.metric("Punkte", f"{st.session_state.score} / {total_q}")
+    if st.button("Nochmal", use_container_width=True): start_exercise(st.session_state.last_category)
+    if st.button("Menü", use_container_width=True): st.session_state.step = "menu"

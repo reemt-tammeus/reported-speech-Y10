@@ -24,27 +24,27 @@ h1, h2, h3, p, label, .stMarkdown {
     color: #ffffff !important;
 }
 
-/* Buttons: Weißer Hintergrund, schwarze Schrift */
+/* Buttons: Schwarzer Hintergrund, weiße Schrift, weißer Rahmen */
 div.stButton > button {
-    background-color: #ffffff !important;
+    background-color: #000000 !important;
     border: 2px solid #ffffff !important;
     transition: all 0.3s ease-in-out;
 }
 
-/* Die Schrift im Button explizit schwarz machen */
+/* Die Schrift im Button explizit weiß machen */
 div.stButton > button p {
-    color: #000000 !important;
+    color: #ffffff !important;
 }
 
-/* Hover-Effekt: Invertieren (Schwarz mit weißer Schrift) */
+/* Hover-Effekt: Invertieren (Weißer Hintergrund mit schwarzer Schrift) */
 div.stButton > button:hover {
-    background-color: #000000 !important;
+    background-color: #ffffff !important;
     border: 2px solid #ffffff !important;
 }
 
-/* Hover-Effekt: Schrift im Button weiß machen */
+/* Hover-Effekt: Schrift im Button schwarz machen */
 div.stButton > button:hover p {
-    color: #ffffff !important;
+    color: #000000 !important;
 }
 
 /* Eingabefeld an den Dark Mode anpassen */
@@ -106,7 +106,7 @@ def get_data():
             {"direct": "I haven't seen her.", "prefix": "He said that", "answer": ["he hadn't seen her", "he had not seen her"], "explanation": "haven't ➔ hadn't"},
             {"direct": "I forgot my umbrella.", "prefix": "She said that", "answer": "she had forgotten her umbrella", "explanation": "forgot ➔ had forgotten"},
             {"direct": "The cake tastes great.", "prefix": "He said that", "answer": "the cake tasted great", "explanation": "tastes ➔ tasted"},
-            {"direct": "I am not afraid.", "prefix": "She said that", "answer": ["she was not afraid", "she wasn't afraid"], "explanation": "am ➔ was"},
+            {"direct": "I am not afraid.", "prefix": "She said that", "answer": ["she was not afraid", "she wasnt afraid"], "explanation": "am ➔ was"},
             {"direct": "We will win.", "prefix": "They said that", "answer": "they would win", "explanation": "will ➔ would"},
             {"direct": "I broke the vase.", "prefix": "The girl said that", "answer": "she had broken the vase", "explanation": "broke ➔ had broken"},
             {"direct": "I am feeling better today.", "prefix": "He said that", "answer": "he was feeling better that day", "explanation": "today ➔ that day"},

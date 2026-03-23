@@ -440,28 +440,37 @@ def start_exercise(category):
 # --- APP START ---
 if 'step' not in st.session_state: st.session_state.step = "menu"
 
+# Haupt-Layout mit Logo rechts
 col1, col2 = st.columns([8, 2])
 with col1:
     st.title("The Snitch - Reported Speech App")
+    
+    # --- NEU: Aktueller Modus Button in verschachtelten Spalten ---
+    if st.session_state.step == "quiz":
+        category_display = {
+            "Backshift": "Backshift of Time",
+            "Statements_WarmUp": "Statements - Warm-Up-Mode",
+            "Statements": "Statements - Test-Prep-Mode",
+            "Questions": "Questions",
+            "Orders and Requests": "Orders / Requests",
+            "Mix": "Mix Mode (Alle Kategorien)"
+        }
+        current_cat_name = category_display.get(st.session_state.last_category, st.session_state.last_category)
+        
+        # Unter-Spalten in der linken Hauptspalte:
+        # [1, 1] bedeutet, beide Hälften sind gleich groß. Der Button ist in der linken.
+        btn_col1, btn_col2 = st.columns([1, 1])
+        with btn_col1:
+            st.button(f"📍 Aktueller Modus: {current_cat_name}", disabled=True, use_container_width=True)
+        
 with col2:
     try:
         st.image("The Snitch.jpg", use_container_width=True)
     except FileNotFoundError:
         st.warning("Logo nicht gefunden.")
 
-# --- Anzeige der aktuellen Kategorie direkt unter der Überschrift ---
-if st.session_state.step == "quiz":
-    category_display = {
-        "Backshift": "Backshift of Time",
-        "Statements_WarmUp": "Statements - Warm-Up-Mode",
-        "Statements": "Statements - Test-Prep-Mode",
-        "Questions": "Questions",
-        "Orders and Requests": "Orders / Requests",
-        "Mix": "Mix Mode (Alle Kategorien)"
-    }
-    current_cat_name = category_display.get(st.session_state.last_category, st.session_state.last_category)
-    st.button(f"📍 Aktueller Modus: {current_cat_name}", disabled=True, use_container_width=True)
-    st.write("") # Nur ein winziger Abstand, keine dicke Linie mehr
+# Nur noch einen kleinen Abstand unterm Header einfügen
+st.write("") 
 
 if st.session_state.step == "menu":
     st.subheader("Kategorie wählen:")
@@ -495,7 +504,6 @@ elif st.session_state.step == "quiz":
     
     clean_direct = q['direct'].rstrip(', ')
     
-    # --- NEU: Große, blaue "Direkt"-Box passend zur Tipp-Box ---
     st.markdown(
         f"<div style='background-color: #1a242f; border-left: 5px solid #3b82f6; padding: 15px; border-radius: 8px; font-size: 22px; margin-bottom: 15px;'>"
         f"Direkt: <b>\"{clean_direct}\"</b>"

@@ -51,6 +51,7 @@ div.stButton > button[disabled] p {
 .stTextInput input {
     background-color: #1a1a1a !important;
     color: #ffffff !important;
+    caret-color: #ffffff !important; /* <--- ÄNDERUNG: Weißer Cursor! */
     border: 1px solid #555555 !important;
 }
 .stTextInput input:focus {
@@ -459,7 +460,6 @@ with col1:
         btn_col1, btn_col2 = st.columns([1, 1])
         with btn_col1:
             st.button(f"📍 Aktueller Modus: {current_cat_name}", disabled=True, use_container_width=True)
-        # --- NEU: Abbruch-Button direkt daneben ---
         with btn_col2:
             if st.button("🏠 Zurück ins Menü", use_container_width=True):
                 st.session_state.step = "menu"

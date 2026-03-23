@@ -2,6 +2,7 @@ import streamlit as st
 import random
 import re
 import streamlit.components.v1 as components
+import difflib
 
 # --- KONFIGURATION ---
 st.set_page_config(
@@ -31,9 +32,12 @@ div.stButton > button {
     transition: all 0.3s ease-in-out;
 }
 
-/* Die Schrift im Button explizit weiß machen */
+/* Die Schrift im Button explizit weiß machen und zweizeiligen Text erlauben */
 div.stButton > button p {
     color: #ffffff !important;
+    white-space: pre-wrap !important; 
+    text-align: center;
+    line-height: 1.3;
 }
 
 /* Hover-Effekt: Invertieren (Weißer Hintergrund mit schwarzer Schrift) */
@@ -65,312 +69,289 @@ div.stButton > button:hover p {
 def get_data():
     return {
         "Statements": [
-            {"direct": "I am hungry.", "prefix": "He said that", "answer": "he was hungry", "explanation": "am ➔ was"},
-            {"direct": "We are watching a movie.", "prefix": "They said that", "answer": "they were watching a movie", "explanation": "are ➔ were"},
-            {"direct": "I have finished my project.", "prefix": "She said that", "answer": "she had finished her project", "explanation": "have finished ➔ had finished"},
-            {"direct": "I will call you tomorrow.", "prefix": "He said that", "answer": ["he would call me the next day", "he would call me the following day"], "explanation": "will ➔ would | tomorrow ➔ the next day"},
-            {"direct": "The sun rises in the east.", "prefix": "The teacher said that", "answer": "the sun rose in the east", "explanation": "rises ➔ rose"},
-            {"direct": "I don't like coffee.", "prefix": "She said that", "answer": ["she didn't like coffee", "she did not like coffee"], "explanation": "don't ➔ didn't"},
-            {"direct": "We went to Paris last year.", "prefix": "They said that", "answer": "they had gone to Paris the year before", "explanation": "went ➔ had gone"},
-            {"direct": "I can speak three languages.", "prefix": "He said that", "answer": "he could speak three languages", "explanation": "can ➔ could"},
-            {"direct": "I am playing the guitar.", "prefix": "She said that", "answer": "she was playing the guitar", "explanation": "am playing ➔ was playing"},
-            {"direct": "I have never been to London.", "prefix": "He said that", "answer": "he had never been to London", "explanation": "have never been ➔ had never been"},
-            {"direct": "My brother is ill.", "prefix": "She said that", "answer": "her brother was ill", "explanation": "my ➔ her | is ➔ was"},
-            {"direct": "We will help you.", "prefix": "They said that", "answer": "they would help me", "explanation": "will ➔ would"},
-            {"direct": "I saw a ghost.", "prefix": "The boy said that", "answer": "he had seen a ghost", "explanation": "saw ➔ had seen"},
-            {"direct": "I am not coming.", "prefix": "He said that", "answer": ["he was not coming", "he wasn't coming"], "explanation": "am not ➔ was not"},
-            {"direct": "The train leaves at five.", "prefix": "She said that", "answer": "the train left at five", "explanation": "leaves ➔ left"},
-            {"direct": "I have lost my phone.", "prefix": "He said that", "answer": "he had lost his phone", "explanation": "have lost ➔ had lost"},
-            {"direct": "We are happy here.", "prefix": "They said that", "answer": "they were happy there", "explanation": "are ➔ were | here ➔ there"},
-            {"direct": "I didn't do it.", "prefix": "She said that", "answer": ["she hadn't done it", "she had not done it"], "explanation": "didn't do ➔ hadn't done"},
-            {"direct": "It is raining.", "prefix": "He said that", "answer": "it was raining", "explanation": "is ➔ was"},
-            {"direct": "I will be there.", "prefix": "She said that", "answer": "she would be there", "explanation": "will ➔ would"},
-            {"direct": "I have a new car.", "prefix": "He said that", "answer": "he had a new car", "explanation": "have ➔ had"},
-            {"direct": "The children are sleeping.", "prefix": "She said that", "answer": "the children were sleeping", "explanation": "are ➔ were"},
-            {"direct": "I went shopping yesterday.", "prefix": "He said that", "answer": "he had gone shopping the day before", "explanation": "yesterday ➔ the day before"},
-            {"direct": "I can't find my keys.", "prefix": "She said that", "answer": ["she couldn't find her keys", "she could not find her keys"], "explanation": "can't ➔ couldn't"},
-            {"direct": "We are going on holiday.", "prefix": "They said that", "answer": "they were going on holiday", "explanation": "are ➔ were"},
-            {"direct": "I have already eaten.", "prefix": "He said that", "answer": "he had already eaten", "explanation": "have ➔ had"},
-            {"direct": "I don't know the answer.", "prefix": "She said that", "answer": ["she didn't know the answer", "she did not know the answer"], "explanation": "don't ➔ didn't"},
-            {"direct": "I will buy a house.", "prefix": "He said that", "answer": "he would buy a house", "explanation": "will ➔ would"},
-            {"direct": "The pizza is delicious.", "prefix": "They said that", "answer": "the pizza was delicious", "explanation": "is ➔ was"},
-            {"direct": "I was at home.", "prefix": "She said that", "answer": "she had been at home", "explanation": "was ➔ had been"},
-            {"direct": "I am learning Spanish.", "prefix": "He said that", "answer": "he was learning Spanish", "explanation": "am ➔ was"},
-            {"direct": "My father works in a bank.", "prefix": "She said that", "answer": "her father worked in a bank", "explanation": "works ➔ worked"},
-            {"direct": "We have seen this film before.", "prefix": "They said that", "answer": "they had seen that film before", "explanation": "this ➔ that"},
-            {"direct": "I don't have enough money.", "prefix": "He said that", "answer": ["he didn't have enough money", "he did not have enough money"], "explanation": "don't ➔ didn't"},
-            {"direct": "I will send the email now.", "prefix": "She said that", "answer": "she would send the email then", "explanation": "now ➔ then"},
-            {"direct": "The museum is closed.", "prefix": "He said that", "answer": "the museum was closed", "explanation": "is ➔ was"},
-            {"direct": "I am meeting a friend.", "prefix": "She said that", "answer": "she was meeting a friend", "explanation": "am ➔ was"},
-            {"direct": "We lived in Berlin.", "prefix": "They said that", "answer": "they had lived in Berlin", "explanation": "lived ➔ had lived"},
-            {"direct": "I haven't seen her.", "prefix": "He said that", "answer": ["he hadn't seen her", "he had not seen her"], "explanation": "haven't ➔ hadn't"},
-            {"direct": "I forgot my umbrella.", "prefix": "She said that", "answer": "she had forgotten her umbrella", "explanation": "forgot ➔ had forgotten"},
-            {"direct": "The cake tastes great.", "prefix": "He said that", "answer": "the cake tasted great", "explanation": "tastes ➔ tasted"},
-            {"direct": "I am not afraid.", "prefix": "She said that", "answer": ["she was not afraid", "she wasnt afraid"], "explanation": "am ➔ was"},
-            {"direct": "We will win.", "prefix": "They said that", "answer": "they would win", "explanation": "will ➔ would"},
-            {"direct": "I broke the vase.", "prefix": "The girl said that", "answer": "she had broken the vase", "explanation": "broke ➔ had broken"},
-            {"direct": "I am feeling better today.", "prefix": "He said that", "answer": "he was feeling better that day", "explanation": "today ➔ that day"},
-            {"direct": "My parents are coming.", "prefix": "She said that", "answer": "her parents were coming", "explanation": "are ➔ were"},
-            {"direct": "I have to go now.", "prefix": "He said that", "answer": "he had to go then", "explanation": "have to ➔ had to"},
-            {"direct": "I won't tell anyone.", "prefix": "She said that", "answer": ["she wouldn't tell anyone", "she would not tell anyone"], "explanation": "won't ➔ wouldn't"},
-            {"direct": "The weather is beautiful.", "prefix": "They said that", "answer": "the weather was beautiful", "explanation": "is ➔ was"},
-            {"direct": "I didn't see the accident.", "prefix": "He said that", "answer": ["he hadn't seen the accident", "he had not seen the accident"], "explanation": "didn't see ➔ hadn't seen"},
-            {"direct": "I am waiting for the bus.", "prefix": "He said that", "answer": "he was waiting for the bus", "explanation": "am ➔ was"},
-            {"direct": "We have lived here for ten years.", "prefix": "They said that", "answer": "they had lived there for ten years", "explanation": "here ➔ there"},
-            {"direct": "I will do my best.", "prefix": "She said that", "answer": "she would do her best", "explanation": "my ➔ her"},
-            {"direct": "I didn't see you at the party.", "prefix": "He told me that", "answer": ["he hadn't seen me at the party", "he had not seen me at the party"], "explanation": "didn't see ➔ hadn't seen"},
-            {"direct": "The water is boiling.", "prefix": "She said that", "answer": "the water was boiling", "explanation": "is ➔ was"},
-            {"direct": "I have already finished my breakfast.", "prefix": "He said that", "answer": "he had already finished his breakfast", "explanation": "my ➔ his"},
-            {"direct": "We are going to the cinema tonight.", "prefix": "They said that", "answer": "they were going to the cinema that night", "explanation": "tonight ➔ that night"},
-            {"direct": "I can't swim very well.", "prefix": "She said that", "answer": ["she couldn't swim very well", "she could not swim very well"], "explanation": "can't ➔ couldn't"},
-            {"direct": "I found a wallet.", "prefix": "He said that", "answer": "he had found a wallet", "explanation": "found ➔ had found"},
-            {"direct": "My sister is a doctor.", "prefix": "She said that", "answer": "her sister was a doctor", "explanation": "is ➔ was"},
-            {"direct": "I will bring the book back.", "prefix": "He said that", "answer": "he would bring the book back", "explanation": "will ➔ would"},
-            {"direct": "The shops are closed.", "prefix": "She said that", "answer": "the shops were closed", "explanation": "are ➔ were"},
-            {"direct": "I am reading a book.", "prefix": "He said that", "answer": "he was reading a book", "explanation": "am ➔ was"},
-            {"direct": "We haven't been to the zoo yet.", "prefix": "They said that", "answer": ["they hadn't been to the zoo yet", "they had not been to the zoo yet"], "explanation": "haven't ➔ hadn't"},
-            {"direct": "I don't like spicy food.", "prefix": "She said that", "answer": ["she didn't like spicy food", "she did not like spicy food"], "explanation": "don't ➔ didn't"},
-            {"direct": "I will call you.", "prefix": "He said that", "answer": "he would call me", "explanation": "will ➔ would"},
-            {"direct": "The dog is barking.", "prefix": "She said that", "answer": "the dog was barking", "explanation": "is ➔ was"},
-            {"direct": "I have lost my passport.", "prefix": "He said that", "answer": "he had lost his passport", "explanation": "my ➔ his"},
-            {"direct": "We saw a great play.", "prefix": "They said that", "answer": "they had seen a great play", "explanation": "saw ➔ had seen"},
-            {"direct": "I am not feeling well.", "prefix": "She said that", "answer": ["she was not feeling well", "she wasn't feeling well"], "explanation": "am ➔ was"},
-            {"direct": "I will make a cake.", "prefix": "He said that", "answer": "he would make a cake", "explanation": "will ➔ would"},
-            {"direct": "My parents are on holiday.", "prefix": "She said that", "answer": "her parents were on holiday", "explanation": "are ➔ were"},
-            {"direct": "I have been working hard.", "prefix": "He said that", "answer": "he had been working hard", "explanation": "have been ➔ had been"},
-            {"direct": "We are moving.", "prefix": "They said that", "answer": "they were moving", "explanation": "are ➔ were"},
-            {"direct": "I didn't have time.", "prefix": "She said that", "answer": ["she hadn't had time", "she had not had time"], "explanation": "didn't have ➔ hadn't had"},
-            {"direct": "I can help you.", "prefix": "He said that", "answer": "he could help me", "explanation": "can ➔ could"},
-            {"direct": "The meeting starts at nine.", "prefix": "She said that", "answer": "the meeting started at nine", "explanation": "starts ➔ started"},
-            {"direct": "I have never seen this sunset.", "prefix": "He said that", "answer": "he had never seen that sunset", "explanation": "this ➔ that"},
-            {"direct": "We don't have any milk.", "prefix": "They said that", "answer": ["they didn't have any milk", "they did not have any milk"], "explanation": "don't ➔ didn't"},
-            {"direct": "I am going to buy shoes.", "prefix": "She said that", "answer": "she was going to buy shoes", "explanation": "am ➔ was"},
-            {"direct": "I will send a postcard.", "prefix": "He said that", "answer": "he would send me a postcard", "explanation": "will ➔ would"},
-            {"direct": "The car is being repaired.", "prefix": "She said that", "answer": "the car was being repaired", "explanation": "is ➔ was"},
-            {"direct": "I have already seen this movie.", "prefix": "He said that", "answer": "he had already seen that movie", "explanation": "this ➔ that"},
-            {"direct": "We played tennis.", "prefix": "They said that", "answer": "they had played tennis", "explanation": "played ➔ had played"},
-            {"direct": "I am not happy with my job.", "prefix": "She said that", "answer": ["she was not happy with her job", "she wasn't happy with her job"], "explanation": "my ➔ her"},
-            {"direct": "I will be home by seven.", "prefix": "He said that", "answer": "he would be home by seven", "explanation": "will ➔ would"},
-            {"direct": "My computer is broken.", "prefix": "She said that", "answer": "her computer was broken", "explanation": "is ➔ was"},
-            {"direct": "I have forgotten my password.", "prefix": "He said that", "answer": "he had forgotten his password", "explanation": "have forgotten ➔ had forgotten"},
-            {"direct": "We are having a party.", "prefix": "They said that", "answer": "they were having a party", "explanation": "are having ➔ were having"},
-            {"direct": "I don't understand.", "prefix": "She said that", "answer": ["she didn't understand", "she did not understand"], "explanation": "don't ➔ didn't"},
-            {"direct": "I will pay.", "prefix": "He said that", "answer": "he would pay", "explanation": "will ➔ would"},
-            {"direct": "The flight was delayed.", "prefix": "She said that", "answer": "the flight had been delayed", "explanation": "was ➔ had been"},
-            {"direct": "I am learning to drive.", "prefix": "He said that", "answer": "he was learning to drive", "explanation": "am ➔ was"},
-            {"direct": "We haven't seen our neighbours.", "prefix": "They said that", "answer": ["they hadn't seen their neighbours", "they had not seen their neighbours"], "explanation": "haven't ➔ hadn't"},
-            {"direct": "I can't go out.", "prefix": "She said that", "answer": ["she couldn't go out", "she could not go out"], "explanation": "can't ➔ couldn't"},
-            {"direct": "I will meet you.", "prefix": "He said that", "answer": "he would meet me", "explanation": "will ➔ would"},
-            {"direct": "The music is too loud.", "prefix": "She said that", "answer": "the music was too loud", "explanation": "is ➔ was"},
-            {"direct": "I have just received a letter.", "prefix": "He said that", "answer": "he had just received a letter", "explanation": "have received ➔ had received"},
-            {"direct": "We are visiting grandparents.", "prefix": "They said that", "answer": "they were visiting their grandparents", "explanation": "are ➔ were"},
-            {"direct": "I didn't like the ending.", "prefix": "She said that", "answer": ["she hadn't liked the ending", "she had not liked the ending"], "explanation": "didn't like ➔ hadn't liked"},
-            {"direct": "I must go to the dentist.", "prefix": "He said that", "answer": "he had to go to the dentist", "explanation": "must ➔ had to"},
-            {"direct": "We are playing hide and seek.", "prefix": "They said that", "answer": "they were playing hide and seek", "explanation": "are ➔ were"},
-            {"direct": "I have been to Japan twice.", "prefix": "She said that", "answer": "she had been to Japan twice", "explanation": "have been ➔ had been"},
-            {"direct": "I will do the washing up.", "prefix": "He said that", "answer": "he would do the washing up", "explanation": "will ➔ would"},
-            {"direct": "The car belongs to my uncle.", "prefix": "She said that", "answer": "the car belonged to her uncle", "explanation": "belongs ➔ belonged"},
-            {"direct": "I don't have any siblings.", "prefix": "He said that", "answer": ["he didn't have any siblings", "he did not have any siblings"], "explanation": "don't ➔ didn't"},
-            {"direct": "We visited the museum.", "prefix": "They said that", "answer": "they had visited the museum", "explanation": "visited ➔ had visited"},
-            {"direct": "I can play the flute.", "prefix": "She said that", "answer": "she could play the flute", "explanation": "can ➔ could"},
-            {"direct": "I am looking for my glasses.", "prefix": "He said that", "answer": "he was looking for his glasses", "explanation": "am ➔ was"},
-            {"direct": "I have just finished a marathon.", "prefix": "She said that", "answer": "she had just finished a marathon", "explanation": "have finished ➔ had finished"},
-            {"direct": "My friend is moving.", "prefix": "He said that", "answer": "his friend was moving", "explanation": "my ➔ his"},
-            {"direct": "We will be late.", "prefix": "They said that", "answer": "they would be late", "explanation": "will ➔ would"},
-            {"direct": "I saw a famous actor.", "prefix": "She said that", "answer": "she had seen a famous actor", "explanation": "saw ➔ had seen"},
-            {"direct": "I am not interested.", "prefix": "He said that", "answer": ["he was not interested", "he wasn't interested"], "explanation": "am ➔ was"},
-            {"direct": "The flowers smell wonderful.", "prefix": "She said that", "answer": "the flowers smelled wonderful", "explanation": "smell ➔ smelled"},
-            {"direct": "I have lost my appetite.", "prefix": "He said that", "answer": "he had lost his appetite", "explanation": "have lost ➔ had lost"},
-            {"direct": "We are waiting for results.", "prefix": "They said that", "answer": "they were waiting for results", "explanation": "are ➔ were"},
-            {"direct": "I didn't mean to hurt you.", "prefix": "She told me that", "answer": ["she hadn't meant to hurt me", "she had not meant to hurt me"], "explanation": "didn't mean ➔ hadn't meant"},
-            {"direct": "It is getting dark.", "prefix": "He said that", "answer": "it was getting dark", "explanation": "is ➔ was"},
-            {"direct": "I will buy you a present.", "prefix": "She said that", "answer": "she would buy me a present", "explanation": "will ➔ would"},
-            {"direct": "I have a terrible headache.", "prefix": "He said that", "answer": "he had a terrible headache", "explanation": "have ➔ had"},
-            {"direct": "The birds are singing.", "prefix": "She said that", "answer": "the birds were singing", "explanation": "are ➔ were"},
-            {"direct": "I bought this dress.", "prefix": "She said that", "answer": "she had bought that dress", "explanation": "this ➔ that"},
-            {"direct": "I can't remember his name.", "prefix": "He said that", "answer": ["he couldn't remember his name", "he could not remember his name"], "explanation": "can't ➔ couldn't"},
-            {"direct": "We are going to the beach.", "prefix": "They said that", "answer": "they were going to the beach", "explanation": "are ➔ were"},
-            {"direct": "I have already cleaned it.", "prefix": "He said that", "answer": "he had already cleaned it", "explanation": "have ➔ had"},
-            {"direct": "I don't think it's a good idea.", "prefix": "She said that", "answer": ["she didn't think it was a good idea", "she did not think it was a good idea"], "explanation": "don't ➔ didn't"},
-            {"direct": "I will lend you my umbrella.", "prefix": "He said that", "answer": "he would lend me his umbrella", "explanation": "will ➔ would"},
-            {"direct": "The soup is too salty.", "prefix": "They said that", "answer": "the soup was too salty", "explanation": "is ➔ was"},
-            {"direct": "I was sleeping when it rang.", "prefix": "She said that", "answer": "she had been sleeping when it rang", "explanation": "was sleeping ➔ had been sleeping"},
-            {"direct": "I am writing a letter.", "prefix": "He said that", "answer": "he was writing a letter", "explanation": "am ➔ was"},
-            {"direct": "My cousin lives in Australia.", "prefix": "She said that", "answer": "her cousin lived in Australia", "explanation": "lives ➔ lived"},
-            {"direct": "We have spent all our money.", "prefix": "They said that", "answer": "they had spent all their money", "explanation": "have spent ➔ had spent"},
-            {"direct": "I don't feel like going out.", "prefix": "He said that", "answer": ["he didn't feel like going out", "he did not feel like going out"], "explanation": "don't ➔ didn't"},
-            {"direct": "I will fix the car.", "prefix": "She said that", "answer": "she would fix the car", "explanation": "will ➔ would"},
-            {"direct": "The water is too cold.", "prefix": "He said that", "answer": "the water was too cold", "explanation": "is ➔ was"},
-            {"direct": "I am having a great time.", "prefix": "She said that", "answer": "she was having a great time", "explanation": "am ➔ was"},
-            {"direct": "We traveled last summer.", "prefix": "They said that", "answer": "they had traveled the summer before", "explanation": "traveled ➔ had traveled"},
-            {"direct": "I haven't heard from him.", "prefix": "He said that", "answer": ["he hadn't heard from him", "he had not heard from him"], "explanation": "haven't ➔ hadn't"},
-            {"direct": "I forgot to lock the door.", "prefix": "She said that", "answer": "she had forgotten to lock the door", "explanation": "forgot ➔ had forgotten"},
-            {"direct": "The performance starts at 8.", "prefix": "He said that", "answer": "the performance started at 8", "explanation": "starts ➔ started"},
-            {"direct": "I am not ready yet.", "prefix": "She said that", "answer": ["she was not ready yet", "she wasn't ready yet"], "explanation": "am ➔ was"},
-            {"direct": "We will enjoy the show.", "prefix": "They said that", "answer": "they would enjoy the show", "explanation": "will ➔ would"},
-            {"direct": "I made a mistake.", "prefix": "The student said that", "answer": "he had made a mistake", "explanation": "made ➔ had made"},
-            {"direct": "I am working on a project.", "prefix": "He said that", "answer": "he was working on a project", "explanation": "am ➔ was"},
-            {"direct": "My parents are proud of me.", "prefix": "She said that", "answer": "her parents were proud of her", "explanation": "are ➔ were"},
-            {"direct": "I have to finish this.", "prefix": "He said that", "answer": "he had to finish that", "explanation": "have to ➔ had to"},
-            {"direct": "I won't forget your birthday.", "prefix": "She said that", "answer": ["she wouldn't forget my birthday", "she would not forget my birthday"], "explanation": "won't ➔ wouldn't"},
-            {"direct": "The movie was very boring.", "prefix": "They said that", "answer": "the movie had been very boring", "explanation": "was ➔ had been"},
-            {"direct": "I didn't understand the instructions.", "prefix": "He said that", "answer": ["he hadn't understood the instructions", "he had not understood the instructions"], "explanation": "didn't ➔ hadn't"}
+            {"direct": "I am hungry now.", "prefix": "He said that", "answer": "he was hungry then", "explanation": "am ➔ was | now ➔ then"},
+            {"direct": "We are watching a movie here.", "prefix": "They said that", "answer": "they were watching a movie there", "explanation": "are ➔ were | here ➔ there"},
+            {"direct": "I have finished my project today.", "prefix": "She said that", "answer": "she had finished her project that day", "explanation": "have ➔ had | my ➔ her | today ➔ that day"},
+            {"direct": "I will call you tomorrow.", "prefix": "He told me that", "answer": ["he would call me the next day", "he would call me the following day"], "explanation": "will ➔ would | you ➔ me | tomorrow ➔ the next day"},
+            {"direct": "The sun is shining here today.", "prefix": "The teacher said that", "answer": "the sun was shining there that day", "explanation": "is ➔ was | here ➔ there | today ➔ that day"},
+            {"direct": "I don't like this coffee.", "prefix": "She said that", "answer": ["she didn't like that coffee", "she did not like that coffee"], "explanation": "don't ➔ didn't | this ➔ that"},
+            {"direct": "We went to Paris last year.", "prefix": "They said that", "answer": "they had gone to Paris the year before", "explanation": "went ➔ had gone | last year ➔ the year before"},
+            {"direct": "I can speak three languages now.", "prefix": "He said that", "answer": "he could speak three languages then", "explanation": "can ➔ could | now ➔ then"},
+            {"direct": "I am playing my guitar here.", "prefix": "She said that", "answer": "she was playing her guitar there", "explanation": "am ➔ was | my ➔ her | here ➔ there"},
+            {"direct": "I have never been to this city.", "prefix": "He said that", "answer": "he had never been to that city", "explanation": "have ➔ had | this ➔ that"},
+            {"direct": "My brother is ill today.", "prefix": "She said that", "answer": "her brother was ill that day", "explanation": "is ➔ was | my ➔ her | today ➔ that day"},
+            {"direct": "We will help you tomorrow.", "prefix": "They told me that", "answer": ["they would help me the next day", "they would help me the following day"], "explanation": "will ➔ would | you ➔ me | tomorrow ➔ the next day"},
+            {"direct": "I saw a ghost here yesterday.", "prefix": "The boy said that", "answer": "he had seen a ghost there the day before", "explanation": "saw ➔ had seen | here ➔ there | yesterday ➔ the day before"},
+            {"direct": "I am not coming today.", "prefix": "He said that", "answer": ["he was not coming that day", "he wasn't coming that day"], "explanation": "am not ➔ was not | today ➔ that day"},
+            {"direct": "This train leaves at five.", "prefix": "She said that", "answer": "that train left at five", "explanation": "leaves ➔ left | this ➔ that"},
+            {"direct": "I have lost my phone here.", "prefix": "He said that", "answer": "he had lost his phone there", "explanation": "have ➔ had | my ➔ his | here ➔ there"},
+            {"direct": "We are happy here now.", "prefix": "They said that", "answer": "they were happy there then", "explanation": "are ➔ were | here ➔ there | now ➔ then"},
+            {"direct": "I didn't do it yesterday.", "prefix": "She said that", "answer": ["she hadn't done it the day before", "she had not done it the day before"], "explanation": "didn't ➔ hadn't | yesterday ➔ the day before"},
+            {"direct": "It is raining here today.", "prefix": "He said that", "answer": "it was raining there that day", "explanation": "is ➔ was | here ➔ there | today ➔ that day"},
+            {"direct": "I will be here tomorrow.", "prefix": "She said that", "answer": ["she would be there the next day", "she would be there the following day"], "explanation": "will ➔ would | here ➔ there | tomorrow ➔ the next day"},
+            {"direct": "I have my new car here.", "prefix": "He said that", "answer": "he had his new car there", "explanation": "have ➔ had | my ➔ his | here ➔ there"},
+            {"direct": "My children are sleeping now.", "prefix": "She said that", "answer": "her children were sleeping then", "explanation": "are ➔ were | my ➔ her | now ➔ then"},
+            {"direct": "I went shopping with my brother yesterday.", "prefix": "He said that", "answer": "he had gone shopping with his brother the day before", "explanation": "went ➔ had gone | my ➔ his | yesterday ➔ the day before"},
+            {"direct": "I can't find my keys here.", "prefix": "She said that", "answer": ["she couldn't find her keys there", "she could not find her keys there"], "explanation": "can't ➔ couldn't | my ➔ her | here ➔ there"},
+            {"direct": "We are going on holiday next week.", "prefix": "They said that", "answer": "they were going on holiday the following week", "explanation": "are ➔ were | next week ➔ the following week"},
+            {"direct": "I have already eaten my lunch.", "prefix": "He said that", "answer": "he had already eaten his lunch", "explanation": "have ➔ had | my ➔ his"},
+            {"direct": "I don't know the answer to this question.", "prefix": "She said that", "answer": ["she didn't know the answer to that question", "she did not know the answer to that question"], "explanation": "don't ➔ didn't | this ➔ that"},
+            {"direct": "I will buy a house next year.", "prefix": "He said that", "answer": "he would buy a house the following year", "explanation": "will ➔ would | next year ➔ the following year"},
+            {"direct": "This pizza is delicious.", "prefix": "They said that", "answer": "that pizza was delicious", "explanation": "is ➔ was | this ➔ that"},
+            {"direct": "I was at home yesterday.", "prefix": "She said that", "answer": "she had been at home the day before", "explanation": "was ➔ had been | yesterday ➔ the day before"},
+            {"direct": "I am learning Spanish now.", "prefix": "He said that", "answer": "he was learning Spanish then", "explanation": "am ➔ was | now ➔ then"},
+            {"direct": "My father works in a bank here.", "prefix": "She said that", "answer": "her father worked in a bank there", "explanation": "works ➔ worked | my ➔ her | here ➔ there"},
+            {"direct": "We have seen this film with our friends before.", "prefix": "They said that", "answer": "they had seen that film with their friends before", "explanation": "have ➔ had | this ➔ that | our ➔ their"},
+            {"direct": "I don't have enough money today.", "prefix": "He said that", "answer": ["he didn't have enough money that day", "he did not have enough money that day"], "explanation": "don't ➔ didn't | today ➔ that day"},
+            {"direct": "I will send my email now.", "prefix": "She said that", "answer": "she would send her email then", "explanation": "will ➔ would | my ➔ her | now ➔ then"},
+            {"direct": "This museum is closed today.", "prefix": "He said that", "answer": "that museum was closed that day", "explanation": "is ➔ was | this ➔ that | today ➔ that day"},
+            {"direct": "I am meeting my friend tonight.", "prefix": "She said that", "answer": "she was meeting her friend that night", "explanation": "am ➔ was | my ➔ her | tonight ➔ that night"},
+            {"direct": "We lived in Berlin last year.", "prefix": "They said that", "answer": "they had lived in Berlin the year before", "explanation": "lived ➔ had lived | last year ➔ the year before"},
+            {"direct": "I haven't seen her since yesterday.", "prefix": "He said that", "answer": ["he hadn't seen her since the day before", "he had not seen her since the day before"], "explanation": "haven't ➔ hadn't | yesterday ➔ the day before"},
+            {"direct": "I forgot my umbrella here.", "prefix": "She said that", "answer": "she had forgotten her umbrella there", "explanation": "forgot ➔ had forgotten | my ➔ her | here ➔ there"},
+            {"direct": "This cake tastes great today.", "prefix": "He said that", "answer": "that cake tasted great that day", "explanation": "tastes ➔ tasted | this ➔ that | today ➔ that day"},
+            {"direct": "I am not afraid now.", "prefix": "She said that", "answer": ["she was not afraid then", "she wasn't afraid then"], "explanation": "am ➔ was | now ➔ then"},
+            {"direct": "We will win tomorrow.", "prefix": "They said that", "answer": ["they would win the next day", "they would win the following day"], "explanation": "will ➔ would | tomorrow ➔ the next day"},
+            {"direct": "I broke this vase yesterday.", "prefix": "The girl said that", "answer": "she had broken that vase the day before", "explanation": "broke ➔ had broken | this ➔ that | yesterday ➔ the day before"},
+            {"direct": "I am feeling better about my exam today.", "prefix": "He said that", "answer": "he was feeling better about his exam that day", "explanation": "am ➔ was | my ➔ his | today ➔ that day"},
+            {"direct": "My parents are coming here tomorrow.", "prefix": "She said that", "answer": ["her parents were coming there the next day", "her parents were coming there the following day"], "explanation": "are ➔ were | my ➔ her | here ➔ there | tomorrow ➔ the next day"},
+            {"direct": "I have to leave this place now.", "prefix": "He said that", "answer": "he had to leave that place then", "explanation": "have to ➔ had to | this ➔ that | now ➔ then"},
+            {"direct": "I won't tell anyone here.", "prefix": "She said that", "answer": ["she wouldn't tell anyone there", "she would not tell anyone there"], "explanation": "won't ➔ wouldn't | here ➔ there"},
+            {"direct": "The weather is beautiful today.", "prefix": "They said that", "answer": "the weather was beautiful that day", "explanation": "is ➔ was | today ➔ that day"},
+            {"direct": "I didn't see the accident yesterday.", "prefix": "He said that", "answer": ["he hadn't seen the accident the day before", "he had not seen the accident the day before"], "explanation": "didn't ➔ hadn't | yesterday ➔ the day before"}
+        ],
+        "Statements_WarmUp": [
+            {"direct": "I am waiting for you here now.", "prefix": "He told me that", "hint": "____ ____ waiting for ____ ____ ____", "answer": "he was waiting for me there then", "explanation": "I ➔ he | am waiting ➔ was waiting | you ➔ me | here ➔ there | now ➔ then"},
+            {"direct": "We finished this task here last night.", "prefix": "They said that", "hint": "____ ____ finished ____ task ____ the night before", "answer": "they had finished that task there the night before", "explanation": "We ➔ they | finished ➔ had finished | this ➔ that | here ➔ there | last night ➔ the night before"},
+            {"direct": "I can meet you here tomorrow.", "prefix": "She told me that", "hint": "____ ____ meet ____ ____ the next day", "answer": ["she could meet me there the next day", "she could meet me there the following day"], "explanation": "I ➔ she | can meet ➔ could meet | you ➔ me | here ➔ there | tomorrow ➔ the next day"},
+            {"direct": "We live here now, and we like this street.", "prefix": "They said that", "hint": "____ ____ ____ ____, and ____ ____ ____ street", "answer": "they lived there then, and they liked that street", "explanation": "We ➔ they | live ➔ lived | here ➔ there | now ➔ then | like ➔ liked | this ➔ that"},
+            {"direct": "I had finished this report here before you came yesterday.", "prefix": "He told me that", "hint": "____ ____ finished ____ report ____ before ____ ____ the day before", "answer": "he had finished that report there before I had come the day before", "explanation": "I ➔ he | had finished bleibt | this ➔ that | here ➔ there | you ➔ I | came ➔ had come | yesterday ➔ the day before"},
+            {"direct": "We shall stay here tonight.", "prefix": "They said that", "hint": "____ ____ stay ____ that night", "answer": ["they would stay there that night", "they should stay there that night"], "explanation": "We ➔ they | shall stay ➔ would stay | here ➔ there | tonight ➔ that night"},
+            {"direct": "I saw you here yesterday after school.", "prefix": "She told me that", "hint": "____ ____ seen ____ ____ the day before after school", "answer": "she had seen me there the day before after school", "explanation": "I ➔ she | saw ➔ had seen | you ➔ me | here ➔ there | yesterday ➔ the day before"},
+            {"direct": "We should leave here earlier tomorrow morning.", "prefix": "They said that", "hint": "____ ____ leave ____ earlier the next morning", "answer": "they should leave there earlier the next morning", "explanation": "We ➔ they | should leave bleibt | here ➔ there | tomorrow morning ➔ the next morning"},
+            {"direct": "I have sent you these photos today.", "prefix": "He told me that", "hint": "____ ____ sent ____ ____ photos that day", "answer": "he had sent me those photos that day", "explanation": "I ➔ he | have sent ➔ had sent | you ➔ me | these ➔ those | today ➔ that day"},
+            {"direct": "My sister will arrive here tomorrow morning.", "prefix": "She said that", "hint": "____ sister ____ arrive ____ the next morning", "answer": "her sister would arrive there the next morning", "explanation": "My ➔ her | will arrive ➔ would arrive | here ➔ there | tomorrow morning ➔ the next morning"},
+            {"direct": "We are working here today on this poster.", "prefix": "They said that", "hint": "____ ____ working ____ that day on ____ poster", "answer": "they were working there that day on that poster", "explanation": "We ➔ they | are working ➔ were working | here ➔ there | today ➔ that day | this ➔ that"},
+            {"direct": "I must stay here in bed today.", "prefix": "He said that", "hint": "____ ____ ____ stay ____ in bed that day", "answer": "he had to stay there in bed that day", "explanation": "I ➔ he | must stay ➔ had to stay | here ➔ there | today ➔ that day"},
+            {"direct": "We would stay here next summer.", "prefix": "They said that", "hint": "____ ____ stay ____ the following summer", "answer": "they would stay there the following summer", "explanation": "We ➔ they | would stay bleibt | here ➔ there | next summer ➔ the following summer"},
+            {"direct": "I always leave my bag here in the morning.", "prefix": "She said that", "hint": "____ always ____ ____ bag ____ in the morning", "answer": "she always left her bag there in the morning", "explanation": "I ➔ she | leave ➔ left | my ➔ her | here ➔ there"},
+            {"direct": "We had left our bikes here before school started.", "prefix": "They said that", "hint": "____ ____ left ____ bikes ____ before school ____ started", "answer": "they had left their bikes there before school had started", "explanation": "We ➔ they | had left bleibt | our ➔ their | here ➔ there | started ➔ had started"},
+            {"direct": "I shall send you this address today.", "prefix": "He told me that", "hint": "____ ____ send ____ ____ address that day", "answer": ["he would send me that address that day", "he should send me that address that day"], "explanation": "I ➔ he | shall send ➔ would/should send | you ➔ me | this ➔ that | today ➔ that day"},
+            {"direct": "I lost my phone here yesterday morning.", "prefix": "She said that", "hint": "____ ____ lost ____ phone ____ the morning before", "answer": "she had lost her phone there the morning before", "explanation": "I ➔ she | lost ➔ had lost | my ➔ her | here ➔ there | yesterday morning ➔ the morning before"},
+            {"direct": "We can use this room here today.", "prefix": "They said that", "hint": "____ ____ use ____ room ____ that day", "answer": "they could use that room there that day", "explanation": "We ➔ they | can use ➔ could use | this ➔ that | here ➔ there | today ➔ that day"},
+            {"direct": "I should call you from here tonight.", "prefix": "He told me that", "hint": "____ ____ call ____ from ____ that night", "answer": "he should call me from there that night", "explanation": "I ➔ he | should call bleibt | you ➔ me | here ➔ there | tonight ➔ that night"},
+            {"direct": "My parents have bought this table here today.", "prefix": "She said that", "hint": "____ parents ____ bought ____ table ____ that day", "answer": "her parents had bought that table there that day", "explanation": "My ➔ her | have bought ➔ had bought | this ➔ that | here ➔ there | today ➔ that day"},
+            {"direct": "We were waiting for you here last night.", "prefix": "They told me that", "hint": "____ ____ ____ waiting for ____ ____ the night before", "answer": "they had been waiting for me there the night before", "explanation": "We ➔ they | were waiting ➔ had been waiting | you ➔ me | here ➔ there | last night ➔ the night before"},
+            {"direct": "I will call you from here tomorrow evening.", "prefix": "He told me that", "hint": "____ ____ call ____ from ____ the next evening", "answer": "he would call me from there the next evening", "explanation": "I ➔ he | will call ➔ would call | you ➔ me | here ➔ there | tomorrow evening ➔ the next evening"},
+            {"direct": "We meet you here every Friday after school.", "prefix": "They told me that", "hint": "____ ____ ____ ____ every Friday after school", "answer": "they met me there every Friday after school", "explanation": "We ➔ they | meet ➔ met | you ➔ me | here ➔ there"},
+            {"direct": "I could help you here tomorrow afternoon.", "prefix": "She told me that", "hint": "____ ____ help ____ ____ the next afternoon", "answer": "she could help me there the next afternoon", "explanation": "I ➔ she | could help bleibt | you ➔ me | here ➔ there | tomorrow afternoon ➔ the next afternoon"},
+            {"direct": "We had packed these bags here before midnight.", "prefix": "They said that", "hint": "____ ____ packed ____ bags ____ before midnight", "answer": "they had packed those bags there before midnight", "explanation": "We ➔ they | had packed bleibt | these ➔ those | here ➔ there"},
+            {"direct": "I shall wait for you here tomorrow.", "prefix": "He told me that", "hint": "____ ____ wait for ____ ____ the next day", "answer": ["he would wait for me there the next day", "he should wait for me there the next day"], "explanation": "I ➔ he | shall wait ➔ would/should wait | you ➔ me | here ➔ there | tomorrow ➔ the next day"},
+            {"direct": "We stayed here last weekend with your aunt.", "prefix": "They told me that", "hint": "____ ____ stayed ____ the weekend before with ____ aunt", "answer": "they had stayed there the weekend before with my aunt", "explanation": "We ➔ they | stayed ➔ had stayed | here ➔ there | last weekend ➔ the weekend before | your ➔ my"},
+            {"direct": "I must finish this essay here tonight.", "prefix": "She said that", "hint": "____ ____ ____ finish ____ essay ____ that night", "answer": "she had to finish that essay there that night", "explanation": "I ➔ she | must finish ➔ had to finish | this ➔ that | here ➔ there | tonight ➔ that night"},
+            {"direct": "We have lived here for three years now.", "prefix": "They said that", "hint": "____ ____ lived ____ for three years ____", "answer": "they had lived there for three years then", "explanation": "We ➔ they | have lived ➔ had lived | here ➔ there | now ➔ then"},
+            {"direct": "I am writing this message here now.", "prefix": "He said that", "hint": "____ ____ writing ____ message ____ ____", "answer": "he was writing that message there then", "explanation": "I ➔ he | am writing ➔ was writing | this ➔ that | here ➔ there | now ➔ then"},
+            {"direct": "My parents would drive us here tomorrow.", "prefix": "She said that", "hint": "____ parents ____ drive ____ ____ the next day", "answer": "her parents would drive them there the next day", "explanation": "My ➔ her | would drive bleibt | us ➔ them | here ➔ there | tomorrow ➔ the next day"},
+            {"direct": "I sit here today, and I need your help.", "prefix": "He told me that", "hint": "____ ____ ____ that day, and ____ ____ ____ help", "answer": "he sat there that day, and he needed my help", "explanation": "I ➔ he | sit ➔ sat | here ➔ there | today ➔ that day | need ➔ needed | your ➔ my"},
+            {"direct": "I had seen your brother here before class yesterday.", "prefix": "She told me that", "hint": "____ ____ seen ____ brother ____ before class the day before", "answer": "she had seen my brother there before class the day before", "explanation": "I ➔ she | had seen bleibt | your ➔ my | here ➔ there | yesterday ➔ the day before"},
+            {"direct": "We shall finish this work here today.", "prefix": "They said that", "hint": "____ ____ finish ____ work ____ that day", "answer": ["they would finish that work there that day", "they should finish that work there that day"], "explanation": "We ➔ they | shall finish ➔ would/should finish | this ➔ that | here ➔ there | today ➔ that day"},
+            {"direct": "I called you from here yesterday afternoon.", "prefix": "He told me that", "hint": "____ ____ called ____ from ____ the afternoon before", "answer": "he had called me from there the afternoon before", "explanation": "I ➔ he | called ➔ had called | you ➔ me | here ➔ there | yesterday afternoon ➔ the afternoon before"},
+            {"direct": "We can finish this work here tonight.", "prefix": "They said that", "hint": "____ ____ finish ____ work ____ that night", "answer": "they could finish that work there that night", "explanation": "We ➔ they | can finish ➔ could finish | this ➔ that | here ➔ there | tonight ➔ that night"},
+            {"direct": "I should talk to our teacher here tomorrow.", "prefix": "She said that", "hint": "____ ____ talk to ____ teacher ____ the next day", "answer": "she should talk to their teacher there the next day", "explanation": "I ➔ she | should talk bleibt | our ➔ their | here ➔ there | tomorrow ➔ the next day"},
+            {"direct": "I have left my jacket here today.", "prefix": "He said that", "hint": "____ ____ left ____ jacket ____ that day", "answer": "he had left his jacket there that day", "explanation": "I ➔ he | have left ➔ had left | my ➔ his | here ➔ there | today ➔ that day"},
+            {"direct": "They were driving here yesterday at noon.", "prefix": "She said that", "hint": "they ____ ____ driving ____ the day before at noon", "answer": "they had been driving there the day before at noon", "explanation": "They bleibt | were driving ➔ had been driving | here ➔ there | yesterday ➔ the day before"},
+            {"direct": "We will paint this room here tomorrow.", "prefix": "They said that", "hint": "____ ____ paint ____ room ____ the next day", "answer": "they would paint that room there the next day", "explanation": "We ➔ they | will paint ➔ would paint | this ➔ that | here ➔ there | tomorrow ➔ the next day"},
+            {"direct": "We finish our homework here every evening.", "prefix": "They said that", "hint": "____ ____ ____ homework ____ every evening", "answer": "they finished their homework there every evening", "explanation": "We ➔ they | finish ➔ finished | our ➔ their | here ➔ there"},
+            {"direct": "My sister could drive us here tomorrow.", "prefix": "He said that", "hint": "____ sister ____ drive ____ ____ the next day", "answer": "his sister could drive them there the next day", "explanation": "My ➔ his | could drive bleibt | us ➔ them | here ➔ there | tomorrow ➔ the next day"},
+            {"direct": "I had written this email here before lunch.", "prefix": "She said that", "hint": "____ ____ written ____ email ____ before lunch", "answer": "she had written that email there before lunch", "explanation": "I ➔ she | had written bleibt | this ➔ that | here ➔ there"},
+            {"direct": "We shall visit your aunt here next weekend.", "prefix": "They told me that", "hint": "____ ____ visit ____ aunt ____ the following weekend", "answer": ["they would visit my aunt there the following weekend", "they should visit my aunt there the following weekend"], "explanation": "We ➔ they | shall visit ➔ would/should visit | your ➔ my | here ➔ there | next weekend ➔ the following weekend"},
+            {"direct": "We sat here this morning near your brother.", "prefix": "They told me that", "hint": "____ ____ sat ____ that morning near ____ brother", "answer": "they had sat there that morning near my brother", "explanation": "We ➔ they | sat ➔ had sat | here ➔ there | this ➔ that | your ➔ my"},
+            {"direct": "We must meet your parents here tonight.", "prefix": "They told me that", "hint": "____ ____ ____ meet ____ parents ____ that night", "answer": "they had to meet my parents there that night", "explanation": "We ➔ they | must meet ➔ had to meet | your ➔ my | here ➔ there | tonight ➔ that night"},
+            {"direct": "I have seen your sister here today.", "prefix": "He told me that", "hint": "____ ____ seen ____ sister ____ that day", "answer": "he had seen my sister there that day", "explanation": "I ➔ he | have seen ➔ had seen | your ➔ my | here ➔ there | today ➔ that day"},
+            {"direct": "We are having dinner here tonight with them.", "prefix": "They said that", "hint": "____ ____ having dinner ____ that night with them", "answer": "they were having dinner there that night with them", "explanation": "We ➔ they | are having ➔ were having | here ➔ there | tonight ➔ that night"},
+            {"direct": "I would finish this project here tonight.", "prefix": "She said that", "hint": "____ ____ finish ____ project ____ that night", "answer": "she would finish that project there that night", "explanation": "I ➔ she | would finish bleibt | this ➔ that | here ➔ there | tonight ➔ that night"},
+            {"direct": "I work here today, and I need this file.", "prefix": "He said that", "hint": "____ ____ ____ that day, and ____ ____ ____ file", "answer": "he worked there that day, and he needed that file", "explanation": "I ➔ he | work ➔ worked | here ➔ there | today ➔ that day | need ➔ needed | this ➔ that"},
+            {"direct": "My parents had moved here before I met you.", "prefix": "She told me that", "hint": "____ parents ____ moved ____ before ____ ____ ____", "answer": "her parents had moved there before she had met me", "explanation": "My ➔ her | had moved bleibt | here ➔ there | I ➔ she | met ➔ had met | you ➔ me"},
+            {"direct": "I could see your bike here yesterday.", "prefix": "He told me that", "hint": "____ ____ see ____ bike ____ the day before", "answer": "he could see my bike there the day before", "explanation": "I ➔ he | could see bleibt | your ➔ my | here ➔ there | yesterday ➔ the day before"},
+            {"direct": "I should visit my grandmother here this weekend.", "prefix": "She said that", "hint": "____ ____ visit ____ grandmother ____ that weekend", "answer": "she should visit her grandmother there that weekend", "explanation": "I ➔ she | should visit bleibt | my ➔ her | here ➔ there | this ➔ that"},
+            {"direct": "We have finished this project here today.", "prefix": "They said that", "hint": "____ ____ finished ____ project ____ that day", "answer": "they had finished that project there that day", "explanation": "We ➔ they | have finished ➔ had finished | this ➔ that | here ➔ there | today ➔ that day"},
+            {"direct": "I was doing my homework here yesterday afternoon.", "prefix": "He said that", "hint": "____ ____ ____ doing ____ homework ____ the afternoon before", "answer": "he had been doing his homework there the afternoon before", "explanation": "I ➔ he | was doing ➔ had been doing | my ➔ his | here ➔ there | yesterday afternoon ➔ the afternoon before"},
+            {"direct": "I will finish this project here tonight.", "prefix": "She said that", "hint": "____ ____ finish ____ project ____ that night", "answer": "she would finish that project there that night", "explanation": "I ➔ she | will finish ➔ would finish | this ➔ that | here ➔ there | tonight ➔ that night"},
+            {"direct": "We must clean this classroom here today.", "prefix": "They said that", "hint": "____ ____ ____ clean ____ classroom ____ that day", "answer": "they had to clean that classroom there that day", "explanation": "We ➔ they | must clean ➔ had to clean | this ➔ that | here ➔ there | today ➔ that day"},
+            {"direct": "I would meet you here tomorrow afternoon.", "prefix": "He told me that", "hint": "____ ____ meet ____ ____ the next afternoon", "answer": "he would meet me there the next afternoon", "explanation": "I ➔ he | would meet bleibt | you ➔ me | here ➔ there | tomorrow afternoon ➔ the next afternoon"},
+            {"direct": "I am staying here this week with my aunt.", "prefix": "She said that", "hint": "____ ____ staying ____ that week with ____ aunt", "answer": "she was staying there that week with her aunt", "explanation": "I ➔ she | am staying ➔ was staying | here ➔ there | this ➔ that | my ➔ her"},
+            {"direct": "I could finish this poster here now.", "prefix": "He said that", "hint": "____ ____ finish ____ poster ____ ____", "answer": "he could finish that poster there then", "explanation": "I ➔ he | could finish bleibt | this ➔ that | here ➔ there | now ➔ then"},
+            {"direct": "We had moved here before I met you.", "prefix": "They told me that", "hint": "____ ____ moved ____ before ____ ____ ____", "answer": "they had moved there before they had met me", "explanation": "We ➔ they | had moved bleibt | here ➔ there | I ➔ they | met ➔ had met | you ➔ me"},
+            {"direct": "We should meet your brother here tomorrow.", "prefix": "They told me that", "hint": "____ ____ meet ____ brother ____ the next day", "answer": "they should meet my brother there the next day", "explanation": "We ➔ they | should meet bleibt | your ➔ my | here ➔ there | tomorrow ➔ the next day"},
+            {"direct": "I have bought this table here today.", "prefix": "She said that", "hint": "____ ____ bought ____ table ____ that day", "answer": "she had bought that table there that day", "explanation": "I ➔ she | have bought ➔ had bought | this ➔ that | here ➔ there | today ➔ that day"},
+            {"direct": "We were playing here this morning with your ball.", "prefix": "They told me that", "hint": "____ ____ ____ playing ____ that morning with ____ ball", "answer": "they had been playing there that morning with my ball", "explanation": "We ➔ they | were playing ➔ had been playing | here ➔ there | this ➔ that | your ➔ my"},
+            {"direct": "I will meet you here tomorrow after school.", "prefix": "He told me that", "hint": "____ ____ meet ____ ____ the next day after school", "answer": "he would meet me there the next day after school", "explanation": "I ➔ he | will meet ➔ would meet | you ➔ me | here ➔ there | tomorrow ➔ the next day"},
+            {"direct": "We must leave here now for school.", "prefix": "They said that", "hint": "____ ____ ____ leave ____ ____ for school", "answer": "they had to leave there then for school", "explanation": "We ➔ they | must leave ➔ had to leave | here ➔ there | now ➔ then"},
+            {"direct": "I should finish this exercise here now.", "prefix": "She said that", "hint": "____ ____ finish ____ exercise ____ ____", "answer": "she should finish that exercise there then", "explanation": "I ➔ she | should finish bleibt | this ➔ that | here ➔ there | now ➔ then"},
+            {"direct": "I am driving here now to your house.", "prefix": "He told me that", "hint": "____ ____ driving ____ ____ to ____ house", "answer": "he was driving there then to my house", "explanation": "I ➔ he | am driving ➔ was driving | here ➔ there | now ➔ then | your ➔ my"},
+            {"direct": "I shall send you this address from here today.", "prefix": "She told me that", "hint": "____ ____ send ____ ____ address from ____ that day", "answer": ["she would send me that address from there that day", "she should send me that address from there that day"], "explanation": "I ➔ she | shall send ➔ would/should send | you ➔ me | this ➔ that | here ➔ there | today ➔ that day"},
+            {"direct": "I saw your brother here yesterday.", "prefix": "He told me that", "hint": "____ ____ seen ____ brother ____ the day before", "answer": "he had seen my brother there the day before", "explanation": "I ➔ he | saw ➔ had seen | your ➔ my | here ➔ there | yesterday ➔ the day before"},
+            {"direct": "We can stay here until Friday.", "prefix": "They said that", "hint": "____ ____ stay ____ until Friday", "answer": "they could stay there until Friday", "explanation": "We ➔ they | can stay ➔ could stay | here ➔ there"},
+            {"direct": "I had packed these bags here before midnight.", "prefix": "She said that", "hint": "____ ____ packed ____ bags ____ before midnight", "answer": "she had packed those bags there before midnight", "explanation": "I ➔ she | had packed bleibt | these ➔ those | here ➔ there"},
+            {"direct": "We would sit here this evening.", "prefix": "They said that", "hint": "____ ____ sit ____ that evening", "answer": "they would sit there that evening", "explanation": "We ➔ they | would sit bleibt | here ➔ there | this ➔ that"},
+            {"direct": "I must return these books here today.", "prefix": "He said that", "hint": "____ ____ ____ return ____ books ____ that day", "answer": "he had to return those books there that day", "explanation": "I ➔ he | must return ➔ had to return | these ➔ those | here ➔ there | today ➔ that day"},
+            {"direct": "I was reading these emails here at nine.", "prefix": "She said that", "hint": "____ ____ ____ reading ____ emails ____ at nine", "answer": "she had been reading those emails there at nine", "explanation": "I ➔ she | was reading ➔ had been reading | these ➔ those | here ➔ there"}
         ],
         "Questions": [
-            {"direct": "Where is the station?", "prefix": "He asked me", "answer": "where the station was", "explanation": "is ➔ was"},
-            {"direct": "Do you like tea?", "prefix": "She asked him", "answer": "if he liked tea", "explanation": "Ja/Nein-Frage ➔ if/whether | like ➔ liked"},
-            {"direct": "What are you doing?", "prefix": "They asked us", "answer": "what we were doing", "explanation": "are ➔ were"},
-            {"direct": "Have you seen my keys?", "prefix": "He asked her", "answer": "if she had seen his keys", "explanation": "Ja/Nein-Frage ➔ if/whether | have ➔ had"},
-            {"direct": "Can you swim?", "prefix": "She asked me", "answer": "if I could swim", "explanation": "Ja/Nein-Frage ➔ if/whether | can ➔ could"},
-            {"direct": "Why did you call?", "prefix": "He asked me", "answer": "why I had called", "explanation": "did call ➔ had called"},
-            {"direct": "Will it rain tomorrow?", "prefix": "She asked", "answer": "if it would rain the next day", "explanation": "Ja/Nein-Frage ➔ if/whether | will ➔ would"},
-            {"direct": "Where have you been?", "prefix": "My mom asked me", "answer": "where I had been", "explanation": "have ➔ had"},
-            {"direct": "Is he coming to the party?", "prefix": "She asked", "answer": "if he was coming to the party", "explanation": "Ja/Nein-Frage ➔ if/whether | is ➔ was"},
-            {"direct": "How much does this cost?", "prefix": "He asked", "answer": "how much that cost", "explanation": "this ➔ that"},
-            {"direct": "Do you live here?", "prefix": "She asked me", "answer": "if I lived there", "explanation": "Ja/Nein-Frage ➔ if/whether | here ➔ there"},
-            {"direct": "When will the movie start?", "prefix": "He asked", "answer": "when the movie would start", "explanation": "will ➔ would"},
-            {"direct": "What time is it?", "prefix": "She asked me", "answer": "what time it was", "explanation": "is ➔ was"},
-            {"direct": "Are you busy?", "prefix": "He asked", "answer": "if I was busy", "explanation": "Ja/Nein-Frage ➔ if/whether | are ➔ was"},
-            {"direct": "Where did you buy that car?", "prefix": "She asked him", "answer": "where he had bought that car", "explanation": "did ➔ had"},
-            {"direct": "Can I help you?", "prefix": "The waiter asked", "answer": "if he could help me", "explanation": "Ja/Nein-Frage ➔ if/whether | can ➔ could"},
-            {"direct": "Why are you crying?", "prefix": "He asked her", "answer": "why she was crying", "explanation": "are ➔ was"},
-            {"direct": "Have you finished your homework?", "prefix": "The teacher asked", "answer": "if I had finished my homework", "explanation": "Ja/Nein-Frage ➔ if/whether | have ➔ had"},
-            {"direct": "What do you want?", "prefix": "He asked me", "answer": "what I wanted", "explanation": "do ➔ entfällt"},
-            {"direct": "Did you see the news?", "prefix": "She asked", "answer": "if I had seen the news", "explanation": "Ja/Nein-Frage ➔ if/whether | did ➔ had"},
-            {"direct": "How often do you exercise?", "prefix": "He asked me", "answer": "how often I exercised", "explanation": "do ➔ entfällt"},
-            {"direct": "Is there a bank nearby?", "prefix": "She asked", "answer": "if there was a bank nearby", "explanation": "Ja/Nein-Frage ➔ if/whether | is ➔ was"},
-            {"direct": "What will happen next?", "prefix": "He asked", "answer": "what would happen next", "explanation": "will ➔ would"},
-            {"direct": "Are they playing well?", "prefix": "She asked", "answer": "if they were playing well", "explanation": "Ja/Nein-Frage ➔ if/whether | are ➔ were"},
-            {"direct": "Where can I park?", "prefix": "He asked", "answer": "where he could park", "explanation": "can ➔ could"},
-            {"direct": "Do you have a pen?", "prefix": "She asked", "answer": "if I had a pen", "explanation": "Ja/Nein-Frage ➔ if/whether"},
-            {"direct": "Why is the shop closed?", "prefix": "He asked", "answer": "why the shop was closed", "explanation": "is ➔ was"},
-            {"direct": "How did you find me?", "prefix": "She asked him", "answer": "how he had found her", "explanation": "did ➔ had"},
-            {"direct": "Will you be home late?", "prefix": "He asked", "answer": "if I would be home late", "explanation": "Ja/Nein-Frage ➔ if/whether | will ➔ would"},
-            {"direct": "Are we lost?", "prefix": "She asked", "answer": "if they were lost", "explanation": "Ja/Nein-Frage ➔ if/whether | are ➔ were"},
-            {"direct": "What is your name?", "prefix": "He asked me", "answer": "what my name was", "explanation": "is ➔ was"},
-            {"direct": "Do you speak English?", "prefix": "She asked him", "answer": "if he spoke English", "explanation": "Ja/Nein-Frage ➔ if/whether | do ➔ entfällt"},
-            {"direct": "How long have you lived here?", "prefix": "He asked", "answer": "how long I had lived there", "explanation": "here ➔ there"},
-            {"direct": "Where are you going?", "prefix": "She asked me", "answer": "where I was going", "explanation": "are ➔ was"},
-            {"direct": "Can we go now?", "prefix": "They asked", "answer": "if they could go then", "explanation": "Ja/Nein-Frage ➔ if/whether | now ➔ then"},
-            {"direct": "What were you thinking?", "prefix": "He asked me", "answer": "what I had been thinking", "explanation": "were ➔ had been"},
-            {"direct": "Is it cold outside?", "prefix": "She asked", "answer": "if it was cold outside", "explanation": "Ja/Nein-Frage ➔ if/whether | is ➔ was"},
-            {"direct": "Did you enjoy the meal?", "prefix": "The host asked", "answer": "if we had enjoyed the meal", "explanation": "Ja/Nein-Frage ➔ if/whether | did ➔ had"},
-            {"direct": "Why can't you come?", "prefix": "He asked me", "answer": ["why I couldn't come", "why I could not come"], "explanation": "can't ➔ couldn't"},
-            {"direct": "Who told you that?", "prefix": "She asked", "answer": "who had told him that", "explanation": "told ➔ had told"},
-            {"direct": "Are you coming with us?", "prefix": "He asked", "answer": "if I was coming with them", "explanation": "Ja/Nein-Frage ➔ if/whether | us ➔ them"},
-            {"direct": "Where does she work?", "prefix": "He asked", "answer": "where she worked", "explanation": "does ➔ entfällt"},
-            {"direct": "Have you ever been to Paris?", "prefix": "She asked", "answer": "if I had ever been to Paris", "explanation": "Ja/Nein-Frage ➔ if/whether | have ➔ had"},
-            {"direct": "What did you say?", "prefix": "He asked me", "answer": "what I had said", "explanation": "did ➔ had"},
-            {"direct": "Is your father at home?", "prefix": "She asked", "answer": "if my father was at home", "explanation": "Ja/Nein-Frage ➔ if/whether | is ➔ was"},
-            {"direct": "How many books did you buy?", "prefix": "He asked", "answer": "how many books I had bought", "explanation": "did ➔ had"},
-            {"direct": "Do you like chocolate?", "prefix": "She asked", "answer": "if I liked chocolate", "explanation": "Ja/Nein-Frage ➔ if/whether | do ➔ entfällt"},
-            {"direct": "Will you marry me?", "prefix": "He asked her", "answer": "if she would marry him", "explanation": "Ja/Nein-Frage ➔ if/whether | will ➔ would"},
-            {"direct": "What's wrong?", "prefix": "She asked", "answer": "what was wrong", "explanation": "is ➔ was"},
-            {"direct": "Where did I leave my phone?", "prefix": "He asked himself", "answer": "where he had left his phone", "explanation": "did ➔ had"}
+            {"direct": "Where is the station here?", "prefix": "He asked me", "answer": "where the station was there", "explanation": "is ➔ was | here ➔ there"},
+            {"direct": "Do you like your tea?", "prefix": "She asked him", "answer": "if he liked his tea", "explanation": "Ja/Nein-Frage ➔ if/whether | like ➔ liked | you ➔ he | your ➔ his"},
+            {"direct": "What are you doing now?", "prefix": "They asked us", "answer": "what we were doing then", "explanation": "are ➔ were | you ➔ we | now ➔ then"},
+            {"direct": "Have you seen my keys today?", "prefix": "He asked her", "answer": "if she had seen his keys that day", "explanation": "Ja/Nein-Frage ➔ if/whether | have ➔ had | you ➔ she | my ➔ his | today ➔ that day"},
+            {"direct": "Can you swim here?", "prefix": "She asked me", "answer": "if I could swim there", "explanation": "Ja/Nein-Frage ➔ if/whether | can ➔ could | you ➔ I | here ➔ there"},
+            {"direct": "Why did you call me yesterday?", "prefix": "He asked me", "answer": "why I had called him the day before", "explanation": "did call ➔ had called | me ➔ him | yesterday ➔ the day before"},
+            {"direct": "Will it rain here tomorrow?", "prefix": "She asked", "answer": "if it would rain there the next day", "explanation": "Ja/Nein-Frage ➔ if/whether | will ➔ would | here ➔ there | tomorrow ➔ the next day"},
+            {"direct": "Where have you been today?", "prefix": "My mom asked me", "answer": "where I had been that day", "explanation": "have ➔ had | today ➔ that day"},
+            {"direct": "Is he coming to my party?", "prefix": "She asked", "answer": "if he was coming to her party", "explanation": "Ja/Nein-Frage ➔ if/whether | is ➔ was | my ➔ her"},
+            {"direct": "How much does this cost here?", "prefix": "He asked", "answer": "how much that cost there", "explanation": "this ➔ that | here ➔ there"},
+            {"direct": "Do you live here now?", "prefix": "She asked me", "answer": "if I lived there then", "explanation": "Ja/Nein-Frage ➔ if/whether | here ➔ there | now ➔ then"},
+            {"direct": "When will your movie start?", "prefix": "He asked", "answer": "when his movie would start", "explanation": "will ➔ would | your ➔ his"},
+            {"direct": "What time is it now?", "prefix": "She asked me", "answer": "what time it was then", "explanation": "is ➔ was | now ➔ then"},
+            {"direct": "Are you busy today?", "prefix": "He asked", "answer": "if I was busy that day", "explanation": "Ja/Nein-Frage ➔ if/whether | are ➔ was | you ➔ I | today ➔ that day"},
+            {"direct": "Where did you buy that car yesterday?", "prefix": "She asked him", "answer": "where he had bought that car the day before", "explanation": "did ➔ had | you ➔ he | yesterday ➔ the day before"},
+            {"direct": "Can I help you now?", "prefix": "The waiter asked", "answer": "if he could help me then", "explanation": "Ja/Nein-Frage ➔ if/whether | can ➔ could | I ➔ he | you ➔ me | now ➔ then"},
+            {"direct": "Why are you crying today?", "prefix": "He asked her", "answer": "why she was crying that day", "explanation": "are ➔ was | you ➔ she | today ➔ that day"},
+            {"direct": "Have you finished your homework?", "prefix": "The teacher asked", "answer": "if I had finished my homework", "explanation": "Ja/Nein-Frage ➔ if/whether | have ➔ had | you ➔ I | your ➔ my"},
+            {"direct": "What do you want now?", "prefix": "He asked me", "answer": "what I wanted then", "explanation": "do ➔ entfällt | you ➔ I | now ➔ then"},
+            {"direct": "Did you see the news yesterday?", "prefix": "She asked", "answer": "if I had seen the news the day before", "explanation": "Ja/Nein-Frage ➔ if/whether | did ➔ had | you ➔ I | yesterday ➔ the day before"},
+            {"direct": "How often do you exercise here?", "prefix": "He asked me", "answer": "how often I exercised there", "explanation": "do ➔ entfällt | you ➔ I | here ➔ there"},
+            {"direct": "Is there a bank nearby here?", "prefix": "She asked", "answer": "if there was a bank nearby there", "explanation": "Ja/Nein-Frage ➔ if/whether | is ➔ was | here ➔ there"},
+            {"direct": "What will happen here next?", "prefix": "He asked", "answer": "what would happen there next", "explanation": "will ➔ would | here ➔ there"},
+            {"direct": "Are they playing well today?", "prefix": "She asked", "answer": "if they were playing well that day", "explanation": "Ja/Nein-Frage ➔ if/whether | are ➔ were | today ➔ that day"},
+            {"direct": "Where can I park my car?", "prefix": "He asked", "answer": "where he could park his car", "explanation": "can ➔ could | I ➔ he | my ➔ his"},
+            {"direct": "Do you have my pen?", "prefix": "She asked", "answer": "if I had her pen", "explanation": "Ja/Nein-Frage ➔ if/whether | you ➔ I | my ➔ her"},
+            {"direct": "Why is the shop closed today?", "prefix": "He asked", "answer": "why the shop was closed that day", "explanation": "is ➔ was | today ➔ that day"},
+            {"direct": "How did you find me here?", "prefix": "She asked him", "answer": "how he had found her there", "explanation": "did ➔ had | you ➔ he | me ➔ her | here ➔ there"},
+            {"direct": "Will you be home late tonight?", "prefix": "He asked", "answer": "if I would be home late that night", "explanation": "Ja/Nein-Frage ➔ if/whether | will ➔ would | you ➔ I | tonight ➔ that night"},
+            {"direct": "Are we lost here?", "prefix": "She asked", "answer": "if they were lost there", "explanation": "Ja/Nein-Frage ➔ if/whether | are ➔ were | we ➔ they | here ➔ there"},
+            {"direct": "What is your name?", "prefix": "He asked me", "answer": "what my name was", "explanation": "is ➔ was | your ➔ my"},
+            {"direct": "Do you speak English here?", "prefix": "She asked him", "answer": "if he spoke English there", "explanation": "Ja/Nein-Frage ➔ if/whether | do ➔ entfällt | you ➔ he | here ➔ there"},
+            {"direct": "How long have you lived here?", "prefix": "He asked", "answer": "how long I had lived there", "explanation": "you ➔ I | here ➔ there"},
+            {"direct": "Where are you going tomorrow?", "prefix": "She asked me", "answer": "where I was going the next day", "explanation": "are ➔ was | you ➔ I | tomorrow ➔ the next day"},
+            {"direct": "Can we go now?", "prefix": "They asked", "answer": "if they could go then", "explanation": "Ja/Nein-Frage ➔ if/whether | now ➔ then | we ➔ they"},
+            {"direct": "What were you thinking yesterday?", "prefix": "He asked me", "answer": "what I had been thinking the day before", "explanation": "were ➔ had been | you ➔ I | yesterday ➔ the day before"},
+            {"direct": "Is it cold outside today?", "prefix": "She asked", "answer": "if it was cold outside that day", "explanation": "Ja/Nein-Frage ➔ if/whether | is ➔ was | today ➔ that day"},
+            {"direct": "Did you enjoy your meal?", "prefix": "The host asked", "answer": "if we had enjoyed our meal", "explanation": "Ja/Nein-Frage ➔ if/whether | did ➔ had | you ➔ we | your ➔ our"},
+            {"direct": "Why can't you come tomorrow?", "prefix": "He asked me", "answer": ["why I couldn't come the next day", "why I could not come the next day"], "explanation": "can't ➔ couldn't | you ➔ I | tomorrow ➔ the next day"},
+            {"direct": "Who told you that yesterday?", "prefix": "She asked", "answer": "who had told him that the day before", "explanation": "told ➔ had told | you ➔ him | yesterday ➔ the day before"},
+            {"direct": "Are you coming with us today?", "prefix": "He asked", "answer": "if I was coming with them that day", "explanation": "Ja/Nein-Frage ➔ if/whether | us ➔ them | you ➔ I | today ➔ that day"},
+            {"direct": "Where does she work now?", "prefix": "He asked", "answer": "where she worked then", "explanation": "does ➔ entfällt | now ➔ then"},
+            {"direct": "Have you ever been here before?", "prefix": "She asked", "answer": "if I had ever been there before", "explanation": "Ja/Nein-Frage ➔ if/whether | have ➔ had | you ➔ I | here ➔ there"},
+            {"direct": "What did you say yesterday?", "prefix": "He asked me", "answer": "what I had said the day before", "explanation": "did ➔ had | you ➔ I | yesterday ➔ the day before"},
+            {"direct": "Is your father at home now?", "prefix": "She asked", "answer": "if my father was at home then", "explanation": "Ja/Nein-Frage ➔ if/whether | is ➔ was | your ➔ my | now ➔ then"},
+            {"direct": "How many books did you buy today?", "prefix": "He asked", "answer": "how many books I had bought that day", "explanation": "did ➔ had | you ➔ I | today ➔ that day"},
+            {"direct": "Do you like this chocolate?", "prefix": "She asked", "answer": "if I liked that chocolate", "explanation": "Ja/Nein-Frage ➔ if/whether | do ➔ entfällt | you ➔ I | this ➔ that"},
+            {"direct": "Will you marry me tomorrow?", "prefix": "He asked her", "answer": "if she would marry him the next day", "explanation": "Ja/Nein-Frage ➔ if/whether | will ➔ would | you ➔ she | me ➔ him | tomorrow ➔ the next day"},
+            {"direct": "What's wrong today?", "prefix": "She asked", "answer": "what was wrong that day", "explanation": "is ➔ was | today ➔ that day"},
+            {"direct": "Where did I leave my phone yesterday?", "prefix": "He asked himself", "answer": "where he had left his phone the day before", "explanation": "did ➔ had | I ➔ he | my ➔ his | yesterday ➔ the day before"}
         ],
         "Orders and Requests": [
-            {"direct": "Open the window!", "prefix": "He told me", "answer": "to open the window", "explanation": "Infinitiv mit 'to'"},
-            {"direct": "Don't touch that!", "prefix": "She warned me", "answer": "not to touch that", "explanation": "Verneint: 'not to'"},
-            {"direct": "Please sit down.", "prefix": "He asked us", "answer": "to sit down", "explanation": "to-Infinitiv"},
-            {"direct": "Stop talking!", "prefix": "The teacher told them", "answer": "to stop talking", "explanation": "to-Infinitiv"},
-            {"direct": "Clean your room!", "prefix": "His mother told him", "answer": "to clean his room", "explanation": "to-Infinitiv"},
-            {"direct": "Don't be late!", "prefix": "She told me", "answer": "not to be late", "explanation": "not to"},
-            {"direct": "Give me the book.", "prefix": "He asked me", "answer": "to give him the book", "explanation": "me ➔ him"},
-            {"direct": "Hurry up!", "prefix": "She told us", "answer": "to hurry up", "explanation": "to-Infinitiv"},
-            {"direct": "Please help me.", "prefix": "He asked her", "answer": "to help him", "explanation": "me ➔ him"},
-            {"direct": "Don't smoke here.", "prefix": "The man told us", "answer": "not to smoke there", "explanation": "here ➔ there"},
-            {"direct": "Wait for me!", "prefix": "She told him", "answer": "to wait for her", "explanation": "me ➔ her"},
-            {"direct": "Listen carefully.", "prefix": "The speaker told them", "answer": "to listen carefully", "explanation": "to-Infinitiv"},
-            {"direct": "Don't forget the milk.", "prefix": "She reminded me", "answer": "not to forget the milk", "explanation": "not to"},
-            {"direct": "Eat your vegetables!", "prefix": "The father told him", "answer": "to eat his vegetables", "explanation": "to-Infinitiv"},
-            {"direct": "Please call me later.", "prefix": "She asked me", "answer": "to call her later", "explanation": "me ➔ her"},
-            {"direct": "Don't park here.", "prefix": "The officer told him", "answer": "not to park there", "explanation": "here ➔ there"},
-            {"direct": "Show me your passport.", "prefix": "The official told her", "answer": "to show him her passport", "explanation": "me ➔ him"},
-            {"direct": "Be quiet!", "prefix": "He told them", "answer": "to be quiet", "explanation": "to-Infinitiv"},
-            {"direct": "Don't tell anyone.", "prefix": "She told me", "answer": "not to tell anyone", "explanation": "not to"},
-            {"direct": "Turn off the lights.", "prefix": "He told us", "answer": "to turn off the lights", "explanation": "to-Infinitiv"},
-            {"direct": "Please lend me money.", "prefix": "He asked his friend", "answer": "to lend him money", "explanation": "me ➔ him"},
-            {"direct": "Don't drink the water.", "prefix": "They warned us", "answer": "not to drink the water", "explanation": "not to"},
-            {"direct": "Fasten your seatbelts.", "prefix": "The pilot told them", "answer": "to fasten their seatbelts", "explanation": "your ➔ their"},
-            {"direct": "Come here!", "prefix": "The boss told me", "answer": "to come there", "explanation": "here ➔ there"},
-            {"direct": "Don't make a mess.", "prefix": "She told the kids", "answer": "not to make a mess", "explanation": "not to"},
-            {"direct": "Take a deep breath.", "prefix": "The doctor told him", "answer": "to take a deep breath", "explanation": "to-Infinitiv"},
-            {"direct": "Please send me the file.", "prefix": "She asked him", "answer": "to send her the file", "explanation": "me ➔ her"},
-            {"direct": "Don't look back.", "prefix": "He told her", "answer": "not to look back", "explanation": "not to"},
-            {"direct": "Put the gun down!", "prefix": "The police told him", "answer": "to put the gun down", "explanation": "to-Infinitiv"},
-            {"direct": "Read the instructions.", "prefix": "She told me", "answer": "to read the instructions", "explanation": "to-Infinitiv"},
-            {"direct": "Don't feed the animals.", "prefix": "The sign told us", "answer": "not to feed the animals", "explanation": "not to"},
-            {"direct": "Follow me.", "prefix": "The guide told them", "answer": "to follow him", "explanation": "me ➔ him"},
-            {"direct": "Please be patient.", "prefix": "She asked us", "answer": "to be patient", "explanation": "to-Infinitiv"},
-            {"direct": "Don't worry so much.", "prefix": "He told me", "answer": "not to worry so much", "explanation": "not to"},
-            {"direct": "Sign the document.", "prefix": "The lawyer told her", "answer": "to sign the document", "explanation": "to-Infinitiv"},
-            {"direct": "Don't scream.", "prefix": "He told her", "answer": "not to scream", "explanation": "not to"},
-            {"direct": "Buckle up!", "prefix": "The driver told them", "answer": "to buckle up", "explanation": "to-Infinitiv"},
-            {"direct": "Don't open the door.", "prefix": "She told him", "answer": "not to open the door", "explanation": "not to"},
-            {"direct": "Try again.", "prefix": "The coach told me", "answer": "to try again", "explanation": "to-Infinitiv"},
-            {"direct": "Please hold the line.", "prefix": "The secretary asked him", "answer": "to hold the line", "explanation": "to-Infinitiv"},
-            {"direct": "Don't use your phone.", "prefix": "The teacher told them", "answer": "not to use their phones", "explanation": "your ➔ their"},
-            {"direct": "Go to bed!", "prefix": "The mother told him", "answer": "to go to bed", "explanation": "to-Infinitiv"},
-            {"direct": "Don't jump!", "prefix": "They told him", "answer": "not to jump", "explanation": "not to"},
-            {"direct": "Pass the salt, please.", "prefix": "He asked her", "answer": "to pass the salt", "explanation": "to-Infinitiv"},
-            {"direct": "Don't cry.", "prefix": "She told me", "answer": "not to cry", "explanation": "not to"},
-            {"direct": "Watch your step.", "prefix": "He told us", "answer": "to watch our step", "explanation": "to-Infinitiv"},
-            {"direct": "Don't run.", "prefix": "The father told him", "answer": "not to run", "explanation": "not to"},
-            {"direct": "Tell me the truth.", "prefix": "She told him", "answer": "to tell her the truth", "explanation": "me ➔ her"},
-            {"direct": "Don't drive so fast.", "prefix": "She told him", "answer": "not to drive so fast", "explanation": "not to"},
-            {"direct": "Please bring wine.", "prefix": "He asked them", "answer": "to bring wine", "explanation": "to-Infinitiv"}
+            {"direct": "Open the window now!", "prefix": "He told me", "answer": "to open the window then", "explanation": "Infinitiv mit 'to' | now ➔ then"},
+            {"direct": "Don't touch my things!", "prefix": "She warned me", "answer": "not to touch her things", "explanation": "Verneint: 'not to' | my ➔ her"},
+            {"direct": "Please sit down here.", "prefix": "He asked us", "answer": "to sit down there", "explanation": "to-Infinitiv | here ➔ there"},
+            {"direct": "Stop talking now!", "prefix": "The teacher told them", "answer": "to stop talking then", "explanation": "to-Infinitiv | now ➔ then"},
+            {"direct": "Clean your room today!", "prefix": "His mother told him", "answer": "to clean his room that day", "explanation": "to-Infinitiv | your ➔ his | today ➔ that day"},
+            {"direct": "Don't be late tomorrow!", "prefix": "She told me", "answer": "not to be late the next day", "explanation": "not to | tomorrow ➔ the next day"},
+            {"direct": "Give me your book.", "prefix": "He asked me", "answer": "to give him my book", "explanation": "me ➔ him | your ➔ my"},
+            {"direct": "Hurry up now!", "prefix": "She told us", "answer": "to hurry up then", "explanation": "to-Infinitiv | now ➔ then"},
+            {"direct": "Please help me with this.", "prefix": "He asked her", "answer": "to help him with that", "explanation": "me ➔ him | this ➔ that"},
+            {"direct": "Don't smoke here today.", "prefix": "The man told us", "answer": "not to smoke there that day", "explanation": "here ➔ there | today ➔ that day"},
+            {"direct": "Wait for me here!", "prefix": "She told him", "answer": "to wait for her there", "explanation": "me ➔ her | here ➔ there"},
+            {"direct": "Listen carefully to me.", "prefix": "The speaker told them", "answer": "to listen carefully to him", "explanation": "to-Infinitiv | me ➔ him"},
+            {"direct": "Don't forget my milk tomorrow.", "prefix": "She reminded me", "answer": "not to forget her milk the next day", "explanation": "not to | my ➔ her | tomorrow ➔ the next day"},
+            {"direct": "Eat your vegetables now!", "prefix": "The father told him", "answer": "to eat his vegetables then", "explanation": "to-Infinitiv | your ➔ his | now ➔ then"},
+            {"direct": "Please call me tomorrow.", "prefix": "She asked me", "answer": "to call her the next day", "explanation": "me ➔ her | tomorrow ➔ the next day"},
+            {"direct": "Don't park your car here.", "prefix": "The officer told him", "answer": "not to park his car there", "explanation": "your ➔ his | here ➔ there"},
+            {"direct": "Show me your passport now.", "prefix": "The official told her", "answer": "to show him her passport then", "explanation": "me ➔ him | your ➔ her | now ➔ then"},
+            {"direct": "Be quiet here!", "prefix": "He told them", "answer": "to be quiet there", "explanation": "to-Infinitiv | here ➔ there"},
+            {"direct": "Don't tell anyone about this today.", "prefix": "She told me", "answer": "not to tell anyone about that that day", "explanation": "not to | this ➔ that | today ➔ that day"},
+            {"direct": "Turn off your lights now.", "prefix": "He told us", "answer": "to turn off our lights then", "explanation": "to-Infinitiv | your ➔ our | now ➔ then"},
+            {"direct": "Please lend me your money.", "prefix": "He asked his friend", "answer": "to lend him his money", "explanation": "me ➔ him | your ➔ his"},
+            {"direct": "Don't drink this water here.", "prefix": "They warned us", "answer": "not to drink that water there", "explanation": "not to | this ➔ that | here ➔ there"},
+            {"direct": "Fasten your seatbelts now.", "prefix": "The pilot told them", "answer": "to fasten their seatbelts then", "explanation": "your ➔ their | now ➔ then"},
+            {"direct": "Come here right now!", "prefix": "The boss told me", "answer": "to come there right then", "explanation": "here ➔ there | now ➔ then"},
+            {"direct": "Don't make a mess here today.", "prefix": "She told the kids", "answer": "not to make a mess there that day", "explanation": "not to | here ➔ there | today ➔ that day"},
+            {"direct": "Take a deep breath now.", "prefix": "The doctor told him", "answer": "to take a deep breath then", "explanation": "to-Infinitiv | now ➔ then"},
+            {"direct": "Please send me your file tomorrow.", "prefix": "She asked him", "answer": "to send her his file the next day", "explanation": "me ➔ her | your ➔ his | tomorrow ➔ the next day"},
+            {"direct": "Don't look back now.", "prefix": "He told her", "answer": "not to look back then", "explanation": "not to | now ➔ then"},
+            {"direct": "Put your gun down here!", "prefix": "The police told him", "answer": "to put his gun down there", "explanation": "to-Infinitiv | your ➔ his | here ➔ there"},
+            {"direct": "Read these instructions today.", "prefix": "She told me", "answer": "to read those instructions that day", "explanation": "to-Infinitiv | these ➔ those | today ➔ that day"},
+            {"direct": "Don't feed these animals today.", "prefix": "The sign told us", "answer": "not to feed those animals that day", "explanation": "not to | these ➔ those | today ➔ that day"},
+            {"direct": "Follow me here.", "prefix": "The guide told them", "answer": "to follow him there", "explanation": "me ➔ him | here ➔ there"},
+            {"direct": "Please be patient with us today.", "prefix": "She asked us", "answer": "to be patient with them that day", "explanation": "to-Infinitiv | us ➔ them | today ➔ that day"},
+            {"direct": "Don't worry so much about me today.", "prefix": "He told me", "answer": "not to worry so much about him that day", "explanation": "not to | me ➔ him | today ➔ that day"},
+            {"direct": "Sign this document here.", "prefix": "The lawyer told her", "answer": "to sign that document there", "explanation": "to-Infinitiv | this ➔ that | here ➔ there"},
+            {"direct": "Don't scream at me now.", "prefix": "He told her", "answer": "not to scream at him then", "explanation": "not to | me ➔ him | now ➔ then"},
+            {"direct": "Buckle up your seatbelt now!", "prefix": "The driver told them", "answer": "to buckle up their seatbelts then", "explanation": "to-Infinitiv | your ➔ their | now ➔ then"},
+            {"direct": "Don't open this door today.", "prefix": "She told him", "answer": "not to open that door that day", "explanation": "not to | this ➔ that | today ➔ that day"},
+            {"direct": "Try your exercise again tomorrow.", "prefix": "The coach told me", "answer": "to try my exercise again the next day", "explanation": "to-Infinitiv | your ➔ my | tomorrow ➔ the next day"},
+            {"direct": "Please hold the line for me now.", "prefix": "The secretary asked him", "answer": "to hold the line for her then", "explanation": "to-Infinitiv | me ➔ her | now ➔ then"},
+            {"direct": "Don't use your phone here.", "prefix": "The teacher told them", "answer": "not to use their phones there", "explanation": "your ➔ their | here ➔ there"},
+            {"direct": "Go to your bed now!", "prefix": "The mother told him", "answer": "to go to his bed then", "explanation": "to-Infinitiv | your ➔ his | now ➔ then"},
+            {"direct": "Don't jump from here today!", "prefix": "They told him", "answer": "not to jump from there that day", "explanation": "not to | here ➔ there | today ➔ that day"},
+            {"direct": "Pass me the salt, please.", "prefix": "He asked her", "answer": "to pass him the salt", "explanation": "to-Infinitiv | me ➔ him"},
+            {"direct": "Don't cry about this now.", "prefix": "She told me", "answer": "not to cry about that then", "explanation": "not to | this ➔ that | now ➔ then"},
+            {"direct": "Watch your step here.", "prefix": "He told us", "answer": "to watch our step there", "explanation": "to-Infinitiv | your ➔ our | here ➔ there"},
+            {"direct": "Don't run here today.", "prefix": "The father told him", "answer": "not to run there that day", "explanation": "not to | here ➔ there | today ➔ that day"},
+            {"direct": "Tell me the truth now.", "prefix": "She told him", "answer": "to tell her the truth then", "explanation": "me ➔ her | now ➔ then"},
+            {"direct": "Don't drive your car so fast today.", "prefix": "She told him", "answer": "not to drive his car so fast that day", "explanation": "not to | your ➔ his | today ➔ that day"},
+            {"direct": "Please bring your wine tomorrow.", "prefix": "He asked them", "answer": "to bring their wine the next day", "explanation": "to-Infinitiv | your ➔ their | tomorrow ➔ the next day"}
         ],
         "Backshift": [
-            {"direct": "I work in a bank.", "prefix": "Paul said that he", "suffix": "in a bank.", "answer": "worked", "explanation": "Backshift: Present Simple ➔ Past Simple"},
-            {"direct": "We are watching a movie.", "prefix": "They said that they", "suffix": "a movie.", "answer": "were watching", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
-            {"direct": "She lost her keys yesterday.", "prefix": "I said that she", "suffix": "her keys the day before.", "answer": ["had lost", "'d lost"], "explanation": "Backshift: Past Simple ➔ Past Perfect"},
-            {"direct": "I have finished my homework.", "prefix": "Sarah told me that she", "suffix": "her homework.", "answer": ["had finished", "'d finished"], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
-            {"direct": "I will help you with the bags.", "prefix": "He said that he", "suffix": "me with the bags.", "answer": ["would help", "'d help"], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
-            {"direct": "I can swim very well.", "prefix": "Leo said that he", "suffix": "swim very well.", "answer": "could", "explanation": "Backshift: can ➔ could"},
-            {"direct": "We must go home now.", "prefix": "They explained that they", "suffix": "go home then.", "answer": "had to", "explanation": "Backshift: must ➔ had to | now ➔ then"},
-            {"direct": "I am writing an email.", "prefix": "Tim said that he", "suffix": "an email.", "answer": "was writing", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
-            {"direct": "They live in Berlin.", "prefix": "She said that they", "suffix": "in Berlin.", "answer": "lived", "explanation": "Backshift: Present Simple ➔ Past Simple"},
-            {"direct": "I bought a new car last week.", "prefix": "Marc said that he", "suffix": "a new car the week before.", "answer": ["had bought", "'d bought"], "explanation": "Backshift: Past Simple ➔ Past Perfect"},
-            {"direct": "We have visited Italy twice.", "prefix": "They explained that they", "suffix": "Italy twice.", "answer": ["had visited", "'d visited"], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
-            {"direct": "It will rain later.", "prefix": "The report said that it", "suffix": "rain later.", "answer": ["would rain", "'d rain"], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
-            {"direct": "You may leave early.", "prefix": "The teacher said that I", "suffix": "leave early.", "answer": "might", "explanation": "Backshift: may ➔ might"},
-            {"direct": "I don't like coffee.", "prefix": "Elena said that she", "suffix": "coffee.", "answer": ["did not like", "didn't like"], "explanation": "Backshift: Present Simple (neg) ➔ Past Simple"},
-            {"direct": "We are listening to music.", "prefix": "The girls said that they", "suffix": "to music.", "answer": "were listening", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
-            {"direct": "He didn't see the sign.", "prefix": "I said that he", "suffix": "the sign.", "answer": ["had not seen", "hadn't seen"], "explanation": "Backshift: Past Simple (neg) ➔ Past Perfect"},
-            {"direct": "I have lost my passport.", "prefix": "The tourist told me that he", "suffix": "his passport.", "answer": ["had lost", "'d lost"], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
-            {"direct": "I won't be late.", "prefix": "Julia promised that she", "suffix": "late.", "answer": ["would not be", "wouldn't be"], "explanation": "Backshift: Will-Future (neg) ➔ Would-Conditional"},
-            {"direct": "I must study for the test.", "prefix": "Ben said that he", "suffix": "study for the test.", "answer": "had to", "explanation": "Backshift: must ➔ had to"},
-            {"direct": "The train arrives at 8.", "prefix": "The clerk said that the train", "suffix": "at 8.", "answer": "arrived", "explanation": "Backshift: Present Simple ➔ Past Simple"},
-            {"direct": "We are eating lunch.", "prefix": "They told us that they", "suffix": "lunch.", "answer": "were eating", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
-            {"direct": "I went to the doctor yesterday.", "prefix": "Sam said that he", "suffix": "to the doctor the day before.", "answer": ["had gone", "'d gone"], "explanation": "Backshift: Past Simple ➔ Past Perfect"},
-            {"direct": "I haven't seen that film yet.", "prefix": "Lisa said that she", "suffix": "that film yet.", "answer": ["had not seen", "hadn't seen"], "explanation": "Backshift: Present Perfect (neg) ➔ Past Perfect"},
-            {"direct": "I will send you a postcard.", "prefix": "Clara promised that she", "suffix": "me a postcard.", "answer": ["would send", "'d send"], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
-            {"direct": "I can't come to the party.", "prefix": "Tom said that he", "suffix": "come to the party.", "answer": ["could not", "couldn't"], "explanation": "Backshift: can't ➔ couldn't"},
-            {"direct": "I play the guitar every day.", "prefix": "Anna said that she", "suffix": "the guitar every day.", "answer": "played", "explanation": "Backshift: Present Simple ➔ Past Simple"},
-            {"direct": "We are making pizza.", "prefix": "The boys told us that they", "suffix": "pizza.", "answer": "were making", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
-            {"direct": "They missed the bus.", "prefix": "I explained that they", "suffix": "the bus.", "answer": ["had missed", "'d missed"], "explanation": "Backshift: Past Simple ➔ Past Perfect"},
-            {"direct": "I have never been to London.", "prefix": "Mike said that he", "suffix": "to London.", "answer": ["had never been", "'d never been"], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
-            {"direct": "I will call you later.", "prefix": "My mom promised that she", "suffix": "me later.", "answer": ["would call", "'d call"], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
-            {"direct": "I can speak three languages.", "prefix": "The student said that she", "suffix": "speak three languages.", "answer": "could", "explanation": "Backshift: can ➔ could"},
-            {"direct": "You must wear a helmet.", "prefix": "The officer told him that he", "suffix": "wear a helmet.", "answer": "had to", "explanation": "Backshift: must ➔ had to"},
-            {"direct": "The water is very cold.", "prefix": "The swimmer said that the water", "suffix": "very cold.", "answer": "was", "explanation": "Backshift: am/is/are ➔ was/were"},
-            {"direct": "We are waiting for the taxi.", "prefix": "They said that they", "suffix": "for the taxi.", "answer": "were waiting", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
-            {"direct": "I saw a famous actor yesterday.", "prefix": "Sophie told me that she", "suffix": "a famous actor the day before.", "answer": ["had seen", "'d seen"], "explanation": "Backshift: Past Simple ➔ Past Perfect"},
-            {"direct": "He has already left the office.", "prefix": "The secretary said that he", "suffix": "the office.", "answer": ["had already left", "'d already left"], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
-            {"direct": "We will win the match.", "prefix": "The coach was sure that they", "suffix": "the match.", "answer": ["would win", "'d win"], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
-            {"direct": "You may use my laptop.", "prefix": "Dad said that I", "suffix": "use his laptop.", "answer": "might", "explanation": "Backshift: may ➔ might"},
-            {"direct": "I don't know the answer.", "prefix": "The boy admitted that he", "suffix": "the answer.", "answer": ["did not know", "didn't know"], "explanation": "Backshift: Present Simple (neg) ➔ Past Simple"},
-            {"direct": "They are playing football in the park.", "prefix": "Lucy said that they", "suffix": "football in the park.", "answer": "were playing", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive"},
-            {"direct": "I didn't go to the party.", "prefix": "Kevin said that he", "suffix": "to the party.", "answer": ["had not gone", "hadn't gone"], "explanation": "Backshift: Past Simple (neg) ➔ Past Perfect"},
-            {"direct": "I have forgotten my umbrella.", "prefix": "The woman said that she", "suffix": "her umbrella.", "answer": ["had forgotten", "'d forgotten"], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
-            {"direct": "I won't tell anyone your secret.", "prefix": "Emily promised that she", "suffix": "anyone my secret.", "answer": ["would not tell", "wouldn't tell"], "explanation": "Backshift: Will-Future (neg) ➔ Would-Conditional"},
-            {"direct": "I must finish this report.", "prefix": "The manager explained that he", "suffix": "that report.", "answer": "had to finish", "explanation": "Backshift: must ➔ had to | this ➔ that"},
-            {"direct": "We like our new house.", "prefix": "They said that they", "suffix": "their new house.", "answer": "liked", "explanation": "Backshift: Present Simple ➔ Past Simple"},
-            {"direct": "It is snowing outside.", "prefix": "Grandpa said that it", "suffix": "outside.", "answer": "was snowing", "explanation": "Backshift: is snowing ➔ was snowing"},
-            {"direct": "The plane landed an hour ago.", "prefix": "The pilot said that the plane", "suffix": "an hour before.", "answer": ["had landed", "'d landed"], "explanation": "Backshift: Past Simple ➔ Past Perfect | ago ➔ before"},
-            {"direct": "I have cleaned the kitchen.", "prefix": "David told us that he", "suffix": "the kitchen.", "answer": ["had cleaned", "'d cleaned"], "explanation": "Backshift: Present Perfect ➔ Past Perfect"},
-            {"direct": "I will bring some cake.", "prefix": "Maria said that she", "suffix": "some cake.", "answer": ["would bring", "'d bring"], "explanation": "Backshift: Will-Future ➔ Would-Conditional"},
-            {"direct": "I can't find my glasses.", "prefix": "The old man complained that he", "suffix": "find his glasses.", "answer": ["could not", "couldn't"], "explanation": "Backshift: can't ➔ couldn't"}
+            {"direct": "I work in a bank here.", "prefix": "Paul said that", "answer": "he worked in a bank there", "explanation": "Backshift: Present Simple ➔ Past Simple | I ➔ he | here ➔ there"},
+            {"direct": "We are watching a movie now.", "prefix": "They said that", "answer": "they were watching a movie then", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive | we ➔ they | now ➔ then"},
+            {"direct": "She lost her keys yesterday.", "prefix": "I said that", "answer": ["she had lost her keys the day before", "she'd lost her keys the day before"], "explanation": "Backshift: Past Simple ➔ Past Perfect | yesterday ➔ the day before"},
+            {"direct": "I have finished my homework today.", "prefix": "Sarah told me that", "answer": ["she had finished her homework that day", "she'd finished her homework that day"], "explanation": "Backshift: Present Perfect ➔ Past Perfect | I ➔ she | my ➔ her | today ➔ that day"},
+            {"direct": "I will help you with your bags tomorrow.", "prefix": "He said that", "answer": ["he would help me with my bags the next day", "he'd help me with my bags the next day"], "explanation": "Backshift: Will-Future ➔ Would-Conditional | I ➔ he | you ➔ me | your ➔ my | tomorrow ➔ the next day"},
+            {"direct": "I can swim very well here.", "prefix": "Leo said that", "answer": "he could swim very well there", "explanation": "Backshift: can ➔ could | I ➔ he | here ➔ there"},
+            {"direct": "We must go home now.", "prefix": "They explained that", "answer": "they had to go home then", "explanation": "Backshift: must ➔ had to | we ➔ they | now ➔ then"},
+            {"direct": "I am writing my email today.", "prefix": "Tim said that", "answer": "he was writing his email that day", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive | I ➔ he | my ➔ his | today ➔ that day"},
+            {"direct": "They live in Berlin now.", "prefix": "She said that", "answer": "they lived in Berlin then", "explanation": "Backshift: Present Simple ➔ Past Simple | now ➔ then"},
+            {"direct": "I bought my new car last week.", "prefix": "Marc said that", "answer": ["he had bought his new car the week before", "he'd bought his new car the week before"], "explanation": "Backshift: Past Simple ➔ Past Perfect | I ➔ he | my ➔ his | last week ➔ the week before"},
+            {"direct": "We have visited Italy twice this year.", "prefix": "They explained that", "answer": ["they had visited Italy twice that year", "they'd visited Italy twice that year"], "explanation": "Backshift: Present Perfect ➔ Past Perfect | we ➔ they | this year ➔ that year"},
+            {"direct": "It will rain here later.", "prefix": "The report said that", "answer": ["it would rain there later", "it'd rain there later"], "explanation": "Backshift: Will-Future ➔ Would-Conditional | here ➔ there"},
+            {"direct": "You may leave your work early today.", "prefix": "The teacher said that", "answer": "I might leave my work early that day", "explanation": "Backshift: may ➔ might | you ➔ I | your ➔ my | today ➔ that day"},
+            {"direct": "I don't like this coffee here.", "prefix": "Elena said that", "answer": ["she did not like that coffee there", "she didn't like that coffee there"], "explanation": "Backshift: Present Simple (neg) ➔ Past Simple | I ➔ she | this ➔ that | here ➔ there"},
+            {"direct": "We are listening to our music now.", "prefix": "The girls said that", "answer": "they were listening to their music then", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive | we ➔ they | our ➔ their | now ➔ then"},
+            {"direct": "He didn't see this sign yesterday.", "prefix": "I said that", "answer": ["he had not seen that sign the day before", "he hadn't seen that sign the day before"], "explanation": "Backshift: Past Simple (neg) ➔ Past Perfect | this ➔ that | yesterday ➔ the day before"},
+            {"direct": "I have lost my passport here.", "prefix": "The tourist told me that", "answer": ["he had lost his passport there", "he'd lost his passport there"], "explanation": "Backshift: Present Perfect ➔ Past Perfect | I ➔ he | my ➔ his | here ➔ there"},
+            {"direct": "I won't be late tomorrow.", "prefix": "Julia promised that", "answer": ["she would not be late the next day", "she wouldn't be late the next day"], "explanation": "Backshift: Will-Future (neg) ➔ Would-Conditional | I ➔ she | tomorrow ➔ the next day"},
+            {"direct": "I must study for my test today.", "prefix": "Ben said that", "answer": "he had to study for his test that day", "explanation": "Backshift: must ➔ had to | I ➔ he | my ➔ his | today ➔ that day"},
+            {"direct": "The train arrives here at 8.", "prefix": "The clerk said that", "answer": "the train arrived there at 8", "explanation": "Backshift: Present Simple ➔ Past Simple | here ➔ there"},
+            {"direct": "We are eating our lunch now.", "prefix": "They told us that", "answer": "they were eating their lunch then", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive | we ➔ they | our ➔ their | now ➔ then"},
+            {"direct": "I went to my doctor yesterday.", "prefix": "Sam said that", "answer": ["he had gone to his doctor the day before", "he'd gone to his doctor the day before"], "explanation": "Backshift: Past Simple ➔ Past Perfect | I ➔ he | my ➔ his | yesterday ➔ the day before"},
+            {"direct": "I haven't seen that film here yet.", "prefix": "Lisa said that", "answer": ["she had not seen that film there yet", "she hadn't seen that film there yet"], "explanation": "Backshift: Present Perfect (neg) ➔ Past Perfect | I ➔ she | here ➔ there"},
+            {"direct": "I will send you a postcard tomorrow.", "prefix": "Clara promised that", "answer": ["she would send me a postcard the next day", "she'd send me a postcard the next day"], "explanation": "Backshift: Will-Future ➔ Would-Conditional | I ➔ she | you ➔ me | tomorrow ➔ the next day"},
+            {"direct": "I can't come to your party tonight.", "prefix": "Tom said that", "answer": ["he could not come to my party that night", "he couldn't come to my party that night"], "explanation": "Backshift: can't ➔ couldn't | I ➔ he | your ➔ my | tonight ➔ that night"},
+            {"direct": "I play my guitar every day.", "prefix": "Anna said that", "answer": "she played her guitar every day", "explanation": "Backshift: Present Simple ➔ Past Simple | I ➔ she | my ➔ her"},
+            {"direct": "We are making our pizza now.", "prefix": "The boys told us that", "answer": "they were making their pizza then", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive | we ➔ they | our ➔ their | now ➔ then"},
+            {"direct": "They missed their bus yesterday.", "prefix": "I explained that", "answer": ["they had missed their bus the day before", "they'd missed their bus the day before"], "explanation": "Backshift: Past Simple ➔ Past Perfect | yesterday ➔ the day before"},
+            {"direct": "I have never been to London before today.", "prefix": "Mike said that", "answer": ["he had never been to London before that day", "he'd never been to London before that day"], "explanation": "Backshift: Present Perfect ➔ Past Perfect | I ➔ he | today ➔ that day"},
+            {"direct": "I will call you later today.", "prefix": "My mom promised that", "answer": ["she would call me later that day", "she'd call me later that day"], "explanation": "Backshift: Will-Future ➔ Would-Conditional | I ➔ she | you ➔ me | today ➔ that day"},
+            {"direct": "I can speak my three languages here.", "prefix": "The student said that", "answer": "she could speak her three languages there", "explanation": "Backshift: can ➔ could | I ➔ she | my ➔ her | here ➔ there"},
+            {"direct": "You must wear your helmet today.", "prefix": "The officer told him that", "answer": "he had to wear his helmet that day", "explanation": "Backshift: must ➔ had to | you ➔ he | your ➔ his | today ➔ that day"},
+            {"direct": "The water is very cold here today.", "prefix": "The swimmer said that", "answer": "the water was very cold there that day", "explanation": "Backshift: am/is/are ➔ was/were | here ➔ there | today ➔ that day"},
+            {"direct": "We are waiting for our taxi now.", "prefix": "They said that", "answer": "they were waiting for their taxi then", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive | we ➔ they | our ➔ their | now ➔ then"},
+            {"direct": "I saw a famous actor here yesterday.", "prefix": "Sophie told me that", "answer": ["she had seen a famous actor there the day before", "she'd seen a famous actor there the day before"], "explanation": "Backshift: Past Simple ➔ Past Perfect | I ➔ she | here ➔ there | yesterday ➔ the day before"},
+            {"direct": "He has already left his office today.", "prefix": "The secretary said that", "answer": ["he had already left his office that day", "he'd already left his office that day"], "explanation": "Backshift: Present Perfect ➔ Past Perfect | today ➔ that day"},
+            {"direct": "We will win our match tomorrow.", "prefix": "The coach was sure that", "answer": ["they would win their match the next day", "they'd win their match the next day"], "explanation": "Backshift: Will-Future ➔ Would-Conditional | we ➔ they | our ➔ their | tomorrow ➔ the next day"},
+            {"direct": "You may use my laptop here.", "prefix": "Dad said that", "answer": "I might use his laptop there", "explanation": "Backshift: may ➔ might | you ➔ I | my ➔ his | here ➔ there"},
+            {"direct": "I don't know the answer to this now.", "prefix": "The boy admitted that", "answer": ["he did not know the answer to that then", "he didn't know the answer to that then"], "explanation": "Backshift: Present Simple (neg) ➔ Past Simple | I ➔ he | this ➔ that | now ➔ then"},
+            {"direct": "They are playing football in this park today.", "prefix": "Lucy said that", "answer": "they were playing football in that park that day", "explanation": "Backshift: Pres. Progressive ➔ Past Progressive | this ➔ that | today ➔ that day"},
+            {"direct": "I didn't go to your party yesterday.", "prefix": "Kevin said that", "answer": ["he had not gone to my party the day before", "he hadn't gone to my party the day before"], "explanation": "Backshift: Past Simple (neg) ➔ Past Perfect | I ➔ he | your ➔ my | yesterday ➔ the day before"},
+            {"direct": "I have forgotten my umbrella here.", "prefix": "The woman said that", "answer": ["she had forgotten her umbrella there", "she'd forgotten her umbrella there"], "explanation": "Backshift: Present Perfect ➔ Past Perfect | I ➔ she | my ➔ her | here ➔ there"},
+            {"direct": "I won't tell anyone your secret today.", "prefix": "Emily promised that", "answer": ["she would not tell anyone my secret that day", "she wouldn't tell anyone my secret that day"], "explanation": "Backshift: Will-Future (neg) ➔ Would-Conditional | I ➔ she | your ➔ my | today ➔ that day"},
+            {"direct": "I must finish this report now.", "prefix": "The manager explained that", "answer": "he had to finish that report then", "explanation": "Backshift: must ➔ had to | I ➔ he | this ➔ that | now ➔ then"},
+            {"direct": "We like our new house here.", "prefix": "They said that", "answer": "they liked their new house there", "explanation": "Backshift: Present Simple ➔ Past Simple | we ➔ they | our ➔ their | here ➔ there"},
+            {"direct": "It is snowing outside here today.", "prefix": "Grandpa said that", "answer": "it was snowing outside there that day", "explanation": "Backshift: is snowing ➔ was snowing | here ➔ there | today ➔ that day"},
+            {"direct": "The plane landed here an hour ago.", "prefix": "The pilot said that", "answer": ["the plane had landed there an hour before", "it had landed there an hour before"], "explanation": "Backshift: Past Simple ➔ Past Perfect | here ➔ there | ago ➔ before"},
+            {"direct": "I have cleaned my kitchen today.", "prefix": "David told us that", "answer": ["he had cleaned his kitchen that day", "he'd cleaned his kitchen that day"], "explanation": "Backshift: Present Perfect ➔ Past Perfect | I ➔ he | my ➔ his | today ➔ that day"},
+            {"direct": "I will bring my cake tomorrow.", "prefix": "Maria said that", "answer": ["she would bring her cake the next day", "she'd bring her cake the next day"], "explanation": "Backshift: Will-Future ➔ Would-Conditional | I ➔ she | my ➔ her | tomorrow ➔ the next day"},
+            {"direct": "I can't find my glasses here.", "prefix": "The old man complained that", "answer": ["he could not find his glasses there", "he couldn't find his glasses there"], "explanation": "Backshift: can't ➔ couldn't | I ➔ he | my ➔ his | here ➔ there"}
         ]
     }
 
@@ -395,12 +376,6 @@ def evaluate_answer(user_val):
     else:
         processed = norm_user
 
-    # Suffix-Stripping (Speziell für Backshift: Falls der Nutzer das Satzende mit abtippt)
-    if 'suffix' in q and q['suffix']:
-        norm_suffix = normalize(q['suffix'])
-        if processed.endswith(norm_suffix):
-            processed = processed[:-len(norm_suffix)].strip()
-
     # Double-That/If Correction
     prefix_words = norm_prefix.split()
     if prefix_words:
@@ -411,25 +386,39 @@ def evaluate_answer(user_val):
     answers = q['answer']
     if isinstance(answers, str): answers = [answers]
     
+    # 1. Strenge Prüfung (Exakter Treffer)
     if any(normalize(processed) == normalize(ans) for ans in answers):
         st.session_state.score += 1
         st.session_state.feedback = ("success", "✨ Richtig!")
+        return
+
+    # 2. Smarte Tippfehler-Toleranz (Fuzzy Matching)
+    best_ratio = 0
+    best_match = ""
+    for ans in answers:
+        ratio = difflib.SequenceMatcher(None, normalize(processed), normalize(ans)).ratio()
+        if ratio > best_ratio:
+            best_ratio = ratio
+            best_match = ans
+
+    # Ab 92% Ähnlichkeit lassen wir es als Tippfehler durchgehen
+    if best_ratio > 0.92:
+        st.session_state.score += 1
+        st.session_state.feedback = ("success", f"✨ Fast perfekt! Ein kleiner Tippfehler hat sich eingeschlichen, aber wir lassen das gelten.\n\nGewollt war genau: **{best_match}**")
     else:
+        # Falsch geraten oder zu viele Fehler
         display_ans = answers[0]
-        # Für Lückentexte geben wir den kompletten Lösungssatz als Extra-Hilfe aus
-        if 'suffix' in q and q['suffix']:
-            st.session_state.feedback = ("error", f"Falsch. Korrekt: **{display_ans}**\n\n*(Ganzer Satz: {q['prefix']} {display_ans} {q['suffix']})*")
-        else:
-            st.session_state.feedback = ("error", f"Falsch. Korrekt: **{q['prefix']} {display_ans}**")
+        if 'hint' in q: # Warm-Up Mode
+            st.session_state.feedback = ("error", f"Falsch. Korrekt wäre:\n**{display_ans}**")
+        else: # Test-Prep / Andere Modi
+            st.session_state.feedback = ("error", f"Falsch. Korrekt wäre:\n**{display_ans}**")
 
 def submit_answer():
     user_val = st.session_state.get("temp_input", "").strip()
-    # Leere Eingaben mit Enter ignorieren wir hier (verhindert feststecken)
     if not user_val: return
     evaluate_answer(user_val)
 
 def skip_question():
-    # Wird vom Button aufgerufen, wenn man nicht weiterweiß
     evaluate_answer("[LEER]")
 
 def next_question():
@@ -443,12 +432,11 @@ def start_exercise(category):
     data = get_data()
     st.session_state.last_category = category
     
-    # Fairer Mix-Mode aus allen Pools gleichmäßig
     if category == "Mix":
         pool = []
-        for cat in ["Statements", "Questions", "Orders and Requests", "Backshift"]:
+        for cat in ["Statements_WarmUp", "Statements", "Questions", "Orders and Requests", "Backshift"]:
             cat_pool = data[cat]
-            pool.extend(random.sample(cat_pool, min(4, len(cat_pool))))
+            pool.extend(random.sample(cat_pool, min(3, len(cat_pool))))
         random.shuffle(pool)
         st.session_state.current_pool = pool[:15]
     else:
@@ -463,13 +451,11 @@ def start_exercise(category):
 # --- APP START ---
 if 'step' not in st.session_state: st.session_state.step = "menu"
 
-# --- KOPFZEILE MIT TITEL UND LOGO (Responsive) ---
-col1, col2 = st.columns([7, 3]) # Spalten-Verhältnis 7:3 (Logo nimmt jetzt ca. 30% des Platzes ein statt vorher 20%)
+col1, col2 = st.columns([7, 3])
 with col1:
     st.title("🇬🇧 The Snitch - Reported Speech Trainer")
 with col2:
     try:
-        # Dateiname an das hochgeladene Graffiti-Logo angepasst
         st.image("The Snitch.jpg", use_container_width=True)
     except FileNotFoundError:
         st.warning("Logo nicht gefunden.")
@@ -477,19 +463,29 @@ with col2:
 if st.session_state.step == "menu":
     st.subheader("Kategorie wählen:")
     
-    # Backshift Button ganz oben und hervorgehoben
-    if st.button("Backshift of Tenses", use_container_width=True, type="primary"): 
+    # 1. Zeile
+    if st.button("Backshift of Time", use_container_width=True, type="primary"): 
         start_exercise("Backshift")
         
     st.markdown("---")
     
+    # 2. Zeile
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("Statements", use_container_width=True): start_exercise("Statements")
-        if st.button("Questions", use_container_width=True): start_exercise("Questions")
+        if st.button("Statements\nWarm-Up-Mode", use_container_width=True): start_exercise("Statements_WarmUp")
     with col2:
+        if st.button("Statements\nTest-Prep-Mode", use_container_width=True): start_exercise("Statements")
+        
+    # 3. Zeile
+    col3, col4 = st.columns(2)
+    with col3:
+        if st.button("Questions", use_container_width=True): start_exercise("Questions")
+    with col4:
         if st.button("Orders / Requests", use_container_width=True): start_exercise("Orders and Requests")
-        if st.button("Mix Mode", use_container_width=True): start_exercise("Mix")
+
+    # 4. Zeile
+    st.markdown("<br>", unsafe_allow_html=True) # Kleiner Abstand
+    if st.button("Mix Mode (Alle Kategorien)", use_container_width=True): start_exercise("Mix")
 
 elif st.session_state.step == "quiz":
     q = st.session_state.current_pool[st.session_state.index]
@@ -498,21 +494,20 @@ elif st.session_state.step == "quiz":
     st.progress(st.session_state.index / total_q)
     st.write(f"**Satz {st.session_state.index + 1} / {total_q}**")
     
-    # Visuelles Bereinigen von abschließenden Kommas
     clean_direct = q['direct'].rstrip(', ')
     st.info(f"Direkt: **\"{clean_direct}\"**")
     
-    # Eingabefeld deaktivieren, wenn Feedback da ist, um Double-Callbacks zu verhindern
     input_disabled = st.session_state.feedback is not None
     
-    # UX Check für Lückentext (Backshift) vs Normal
-    if 'suffix' in q:
-        # Lückentext Darstellung
-        st.markdown(f"📝 *{q['prefix']}* `______` *{q['suffix']}*")
-        input_label = "Trage die fehlende Verbform ein:"
-        placeholder = "z.B. had gone"
+    # UX Check für Lückentext vs Normal
+    if 'hint' in q:
+        # Warm-Up-Mode Darstellung
+        st.warning("⚠️ **Wichtig:** Tippe den **kompletten** restlichen Satz ab (nicht nur die Lücken!).")
+        st.markdown(f"💡 **Tipp:** *{q['prefix']}* `{q['hint']}`")
+        input_label = f"Tippe hier weiter: {q['prefix']} ..."
+        placeholder = "Dein kompletter Satz..."
     else:
-        # Normale Darstellung
+        # Normale Test-Prep Darstellung
         input_label = f"{q['prefix']} ..."
         placeholder = "Antwort eingeben & Enter..."
     
@@ -524,7 +519,6 @@ elif st.session_state.step == "quiz":
         disabled=input_disabled
     )
     
-    # --- Autokorrektur, Autocapitalize und Spellcheck fürs Handy deaktivieren ---
     components.html(
         """
         <script>
@@ -539,13 +533,10 @@ elif st.session_state.step == "quiz":
         height=0,
         width=0
     )
-    # ----------------------------------------------------------------------------------
     
-    # Der verlässliche Überspringen-Button
     if not st.session_state.feedback:
         st.button("Ich weiß es nicht / Lösung zeigen", on_click=skip_question)
     
-    # Feedback & Weiter-Button
     if st.session_state.feedback:
         t, m = st.session_state.feedback
         if t == "success": st.success(m)
@@ -556,8 +547,22 @@ elif st.session_state.step == "quiz":
 
 elif st.session_state.step == "result":
     total_q = len(st.session_state.current_pool)
+    
+    # Der Konfetti-/Ballonregen zur Belohnung!
     st.balloons()
-    st.header("Ergebnis")
-    st.metric("Punkte", f"{st.session_state.score} / {total_q}")
-    if st.button("Nochmal", use_container_width=True): start_exercise(st.session_state.last_category)
-    if st.button("Menü", use_container_width=True): st.session_state.step = "menu"
+    
+    st.header("🎉 Geschafft! 🎉")
+    st.metric("Dein Ergebnis:", f"{st.session_state.score} von {total_q} Punkten")
+    
+    st.write("Klasse Leistung! Möchtest du direkt nochmals 15 neue Sätze in dieser Kategorie trainieren oder lieber die Kategorie wechseln?")
+    
+    st.markdown("---")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("🔄 Nochmal 15 Sätze", use_container_width=True, type="primary"): 
+            start_exercise(st.session_state.last_category)
+    with col2:
+        if st.button("🏠 Zurück ins Menü", use_container_width=True): 
+            st.session_state.step = "menu"
+            st.rerun()

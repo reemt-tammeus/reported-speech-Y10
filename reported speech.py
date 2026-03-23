@@ -39,7 +39,6 @@ div.stButton > button:hover {
 div.stButton > button:hover p {
     color: #000000 !important;
 }
-/* Deaktivierte Buttons (als Label) optisch anpassen */
 div.stButton > button[disabled] {
     background-color: #1a1a1a !important;
     border: 1px dashed #555555 !important;
@@ -51,7 +50,7 @@ div.stButton > button[disabled] p {
 .stTextInput input {
     background-color: #1a1a1a !important;
     color: #ffffff !important;
-    caret-color: #ffffff !important; /* <--- ÄNDERUNG: Weißer Cursor! */
+    caret-color: #ffffff !important;
     border: 1px solid #555555 !important;
 }
 .stTextInput input:focus {
@@ -361,6 +360,25 @@ def normalize(text):
     text = re.sub(r'[.!?;]+$', '', text)
     return re.sub(r'\s+', ' ', text)
 
+# --- NEU: Markiert den Fehler im Vergleichssatz rot ---
+def highlight_user_mistakes(user_text, correct_text):
+    if user_text == "[LEER]": return ""
+    
+    uw = user_text.split()
+    cw = correct_text.split()
+    matcher = difflib.SequenceMatcher(None, [w.lower() for w in uw], [w.lower() for w in cw])
+    
+    res = []
+    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+        if i1 == i2: continue
+        chunk = " ".join(uw[i1:i2])
+        if tag == 'equal':
+            res.append(chunk)
+        else:
+            # Roter Hintergrund und durchgestrichen für falsche Wörter
+            res.append(f"<span style='background-color: rgba(255, 75, 75, 0.2); color: #ff4b4b; text-decoration: line-through; padding: 2px 6px; border-radius: 4px; margin: 0 2px;'>{chunk}</span>")
+    return " ".join(res)
+
 def evaluate_answer(user_val):
     q = st.session_state.current_pool[st.session_state.index]
     norm_user = normalize(user_val)
@@ -382,26 +400,32 @@ def evaluate_answer(user_val):
     
     if any(normalize(processed) == normalize(ans) for ans in answers):
         st.session_state.score += 1
-        st.session_state.feedback = ("success", "✨ Richtig!")
+        st.session_state.feedback = ("success", "✨ Richtig!", "")
         return
 
     best_ratio = 0
-    best_match = ""
+    best_match = answers[0]
     for ans in answers:
         ratio = difflib.SequenceMatcher(None, normalize(processed), normalize(ans)).ratio()
         if ratio > best_ratio:
             best_ratio = ratio
             best_match = ans
 
-    if best_ratio > 0.92:
+    if best_ratio > 0.92 and user_val != "[LEER]":
         st.session_state.score += 1
-        st.session_state.feedback = ("success", f"✨ Fast perfekt! Ein kleiner Tippfehler hat sich eingeschlichen, aber wir lassen das gelten.\n\nGewollt war genau: **{best_match}**")
+        st.session_state.feedback = ("success", f"✨ Fast perfekt! Ein kleiner Tippfehler hat sich eingeschlichen, aber wir lassen das gelten.\n\nGewollt war genau: **{best_match}**", "")
     else:
-        display_ans = answers[0]
-        if 'hint' in q: 
-            st.session_state.feedback = ("error", f"Falsch. Korrekt wäre:\n**{display_ans}**")
-        else: 
-            st.session_state.feedback = ("error", f"Falsch. Korrekt wäre:\n**{display_ans}**")
+        if user_val == "[LEER]":
+            st.session_state.feedback = ("skipped", best_match, "")
+        else:
+            # Berechne den Ziel-Satz zum Vergleichen, um den Diff ordentlich zu erstellen
+            if norm_user.startswith(norm_prefix.split()[0]): 
+                expected_target = q['prefix'] + " " + best_match
+            else:
+                expected_target = best_match
+                
+            diff_html = highlight_user_mistakes(user_val, expected_target)
+            st.session_state.feedback = ("error", best_match, diff_html)
 
 def submit_answer():
     user_val = st.session_state.get("temp_input", "").strip()
@@ -409,6 +433,7 @@ def submit_answer():
     evaluate_answer(user_val)
 
 def skip_question():
+    # Wir lassen das Feld leer, aber feuern die Auswertung ab
     evaluate_answer("[LEER]")
 
 def next_question():
@@ -556,16 +581,38 @@ elif st.session_state.step == "quiz":
         st.button("Ich weiß es nicht / Lösung zeigen", on_click=skip_question)
     
     if st.session_state.feedback:
-        t, m = st.session_state.feedback
-        if t == "success": st.success(m)
-        else:
-            st.error(m)
+        t, m, d = st.session_state.feedback
+        
+        if t == "success": 
+            st.success(m)
+            
+        elif t == "skipped":
+            st.error("Übersprungen. Korrekt wäre:")
+            st.markdown(f"<div style='font-size: 20px; color: #4ade80; margin-bottom: 15px;'><b>{m}</b></div>", unsafe_allow_html=True)
             st.markdown(
                 f"<div style='background-color: #332b00; border: 2px solid #ffcc00; padding: 15px; border-radius: 8px; font-size: 20px; color: #ffcc00; margin-bottom: 15px;'>"
                 f"💡 <b>Tipp:</b><br>{q['explanation']}"
                 f"</div>", 
                 unsafe_allow_html=True
             )
+            
+        else: # error Mode mit neuem Fehler-Highlight
+            st.markdown(
+                f"<div style='background-color: #2b1111; border: 2px solid #ff4b4b; padding: 15px; border-radius: 8px; margin-bottom: 15px;'>"
+                f"<p style='color: #cccccc; margin-bottom: 5px; font-size: 16px;'>Deine Eingabe:</p>"
+                f"<div style='font-size: 22px; margin-bottom: 15px;'>{d}</div>"
+                f"<p style='color: #cccccc; margin-bottom: 5px; font-size: 16px;'>Korrekt wäre:</p>"
+                f"<div style='font-size: 22px; color: #4ade80;'><b>{m}</b></div>"
+                f"</div>", 
+                unsafe_allow_html=True
+            )
+            st.markdown(
+                f"<div style='background-color: #332b00; border: 2px solid #ffcc00; padding: 15px; border-radius: 8px; font-size: 20px; color: #ffcc00; margin-bottom: 15px;'>"
+                f"💡 <b>Tipp:</b><br>{q['explanation']}"
+                f"</div>", 
+                unsafe_allow_html=True
+            )
+            
         st.button("Weiter", on_click=next_question, type="primary")
 
 elif st.session_state.step == "result":

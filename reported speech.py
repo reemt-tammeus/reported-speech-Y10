@@ -8,7 +8,7 @@ import difflib
 st.set_page_config(
     page_title="The Snitch - Reported Speech App", 
     page_icon="📝", 
-    layout="wide"  # <--- ÄNDERUNG 1: Nutzt jetzt die volle Breite!
+    layout="wide"  
 )
 
 # --- DESIGN (CSS) ---
@@ -355,7 +355,6 @@ def get_data():
 def normalize(text):
     if not text: return ""
     text = text.lower().strip()
-    # Typografische Apostrophe korrigieren
     text = text.replace("’", "'").replace("´", "'").replace("`", "'")
     text = text.replace("whether", "if")
     text = re.sub(r'[.!?;]+$', '', text)
@@ -366,13 +365,11 @@ def evaluate_answer(user_val):
     norm_user = normalize(user_val)
     norm_prefix = normalize(q['prefix'])
     
-    # Prefix-Stripping (Falls der Nutzer den Satzanfang mit abtippt)
     if norm_user.startswith(norm_prefix):
         processed = norm_user[len(norm_prefix):].strip()
     else:
         processed = norm_user
 
-    # Double-That/If Correction
     prefix_words = norm_prefix.split()
     if prefix_words:
         last_word = prefix_words[-1]
@@ -382,13 +379,11 @@ def evaluate_answer(user_val):
     answers = q['answer']
     if isinstance(answers, str): answers = [answers]
     
-    # 1. Strenge Prüfung (Exakter Treffer)
     if any(normalize(processed) == normalize(ans) for ans in answers):
         st.session_state.score += 1
         st.session_state.feedback = ("success", "✨ Richtig!")
         return
 
-    # 2. Smarte Tippfehler-Toleranz (Fuzzy Matching)
     best_ratio = 0
     best_match = ""
     for ans in answers:
@@ -397,16 +392,14 @@ def evaluate_answer(user_val):
             best_ratio = ratio
             best_match = ans
 
-    # Ab 92% Ähnlichkeit lassen wir es als Tippfehler durchgehen
     if best_ratio > 0.92:
         st.session_state.score += 1
         st.session_state.feedback = ("success", f"✨ Fast perfekt! Ein kleiner Tippfehler hat sich eingeschlichen, aber wir lassen das gelten.\n\nGewollt war genau: **{best_match}**")
     else:
-        # Falsch geraten oder zu viele Fehler
         display_ans = answers[0]
-        if 'hint' in q: # Warm-Up Mode
+        if 'hint' in q: 
             st.session_state.feedback = ("error", f"Falsch. Korrekt wäre:\n**{display_ans}**")
-        else: # Test-Prep / Andere Modi
+        else: 
             st.session_state.feedback = ("error", f"Falsch. Korrekt wäre:\n**{display_ans}**")
 
 def submit_answer():
@@ -447,46 +440,17 @@ def start_exercise(category):
 # --- APP START ---
 if 'step' not in st.session_state: st.session_state.step = "menu"
 
-# <--- ÄNDERUNG 3: Neuer Titel ---
 col1, col2 = st.columns([8, 2])
 with col1:
-    st.title("🇬🇧 The Snitch - Reported Speech App")
+    st.title("The Snitch - Reported Speech App")
 with col2:
     try:
         st.image("The Snitch.jpg", use_container_width=True)
     except FileNotFoundError:
         st.warning("Logo nicht gefunden.")
 
-if st.session_state.step == "menu":
-    st.subheader("Kategorie wählen:")
-    
-    # 1. Zeile
-    if st.button("Backshift of Time", use_container_width=True, type="primary"): 
-        start_exercise("Backshift")
-        
-    st.markdown("---")
-    
-    # 2. Zeile
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("Statements\nWarm-Up-Mode", use_container_width=True): start_exercise("Statements_WarmUp")
-    with col2:
-        if st.button("Statements\nTest-Prep-Mode", use_container_width=True): start_exercise("Statements")
-        
-    # 3. Zeile
-    col3, col4 = st.columns(2)
-    with col3:
-        if st.button("Questions", use_container_width=True): start_exercise("Questions")
-    with col4:
-        if st.button("Orders / Requests", use_container_width=True): start_exercise("Orders and Requests")
-
-    # 4. Zeile
-    st.markdown("<br>", unsafe_allow_html=True)
-    if st.button("Mix Mode (Alle Kategorien)", use_container_width=True): start_exercise("Mix")
-
-elif st.session_state.step == "quiz":
-    
-    # --- Orientierung - Anzeige der aktuellen Kategorie ---
+# --- Anzeige der aktuellen Kategorie direkt unter der Überschrift ---
+if st.session_state.step == "quiz":
     category_display = {
         "Backshift": "Backshift of Time",
         "Statements_WarmUp": "Statements - Warm-Up-Mode",
@@ -496,12 +460,33 @@ elif st.session_state.step == "quiz":
         "Mix": "Mix Mode (Alle Kategorien)"
     }
     current_cat_name = category_display.get(st.session_state.last_category, st.session_state.last_category)
-    
-    st.markdown("---")
     st.button(f"📍 Aktueller Modus: {current_cat_name}", disabled=True, use_container_width=True)
-    st.markdown("<br>", unsafe_allow_html=True)
-    # ---------------------------------------------------------
+    st.write("") # Nur ein winziger Abstand, keine dicke Linie mehr
 
+if st.session_state.step == "menu":
+    st.subheader("Kategorie wählen:")
+    
+    if st.button("Backshift of Time", use_container_width=True, type="primary"): 
+        start_exercise("Backshift")
+        
+    st.markdown("---")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Statements\nWarm-Up-Mode", use_container_width=True): start_exercise("Statements_WarmUp")
+    with col2:
+        if st.button("Statements\nTest-Prep-Mode", use_container_width=True): start_exercise("Statements")
+        
+    col3, col4 = st.columns(2)
+    with col3:
+        if st.button("Questions", use_container_width=True): start_exercise("Questions")
+    with col4:
+        if st.button("Orders / Requests", use_container_width=True): start_exercise("Orders and Requests")
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    if st.button("Mix Mode (Alle Kategorien)", use_container_width=True): start_exercise("Mix")
+
+elif st.session_state.step == "quiz":
     q = st.session_state.current_pool[st.session_state.index]
     total_q = len(st.session_state.current_pool)
     
@@ -509,16 +494,20 @@ elif st.session_state.step == "quiz":
     st.write(f"**Satz {st.session_state.index + 1} / {total_q}**")
     
     clean_direct = q['direct'].rstrip(', ')
-    st.info(f"Direkt: **\"{clean_direct}\"**")
+    
+    # --- NEU: Große, blaue "Direkt"-Box passend zur Tipp-Box ---
+    st.markdown(
+        f"<div style='background-color: #1a242f; border-left: 5px solid #3b82f6; padding: 15px; border-radius: 8px; font-size: 22px; margin-bottom: 15px;'>"
+        f"Direkt: <b>\"{clean_direct}\"</b>"
+        f"</div>", 
+        unsafe_allow_html=True
+    )
     
     input_disabled = st.session_state.feedback is not None
     
-    # UX Check für Lückentext vs Normal
     if 'hint' in q:
-        # Warm-Up-Mode Darstellung
         st.warning("⚠️ **Wichtig:** Tippe den **kompletten** restlichen Satz ab (nicht nur die Lücken!).")
         
-        # <--- ÄNDERUNG 2: Hilfstext im Warm-Up viel größer ---
         st.markdown(
             f"<div style='font-size: 22px; margin-bottom: 10px;'>"
             f"💡 <b>Tipp:</b> <i>{q['prefix']}</i> <code>{q['hint']}</code>"
@@ -528,7 +517,6 @@ elif st.session_state.step == "quiz":
         input_label = f"Tippe hier weiter: {q['prefix']} ..."
         placeholder = "Dein kompletter Satz..."
     else:
-        # Normale Test-Prep Darstellung
         input_label = f"{q['prefix']} ..."
         placeholder = "Antwort eingeben & Enter..."
     
@@ -563,7 +551,6 @@ elif st.session_state.step == "quiz":
         if t == "success": st.success(m)
         else:
             st.error(m)
-            # <--- ÄNDERUNG 2: Fehler-Tipp viel größer und auffälliger ---
             st.markdown(
                 f"<div style='background-color: #332b00; border: 2px solid #ffcc00; padding: 15px; border-radius: 8px; font-size: 20px; color: #ffcc00; margin-bottom: 15px;'>"
                 f"💡 <b>Tipp:</b><br>{q['explanation']}"
@@ -575,7 +562,6 @@ elif st.session_state.step == "quiz":
 elif st.session_state.step == "result":
     total_q = len(st.session_state.current_pool)
     
-    # Der Konfetti-/Ballonregen zur Belohnung!
     st.balloons()
     
     st.header("🎉 Geschafft! 🎉")
@@ -594,6 +580,5 @@ elif st.session_state.step == "result":
             st.session_state.step = "menu"
             st.rerun()
 
-# <--- ÄNDERUNG 4: Footer ---
 st.markdown("<br><br><br>", unsafe_allow_html=True)
 st.markdown("<div style='text-align: center; color: #888888; font-size: 14px;'>created by Mr. T.</div>", unsafe_allow_html=True)
